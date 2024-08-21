@@ -1,0 +1,69 @@
+image: node:18
+
+stages:
+  # - check
+  # - test
+  - deploy
+
+# eslint:
+#   stage: check
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+#   script:
+#     - echo "ESLINT CHECK"
+#     - echo "Install packages"
+#     - npm i
+#     - npm run lint
+#     - echo "ESLINT CHECK COMPLETE"
+
+# prettier:
+#   stage: check
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+#   script:
+#     - echo "ESLINT CHECK"
+#     - echo "Install packages"
+#     - npm i
+#     - npm run prettier
+#     - echo "PRETTIER CHECK COMPLETE"
+
+# e2e:
+#   stage: test
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+#   script:
+#     - echo "E2E TESTS"
+#     - echo "Install packages"
+#     - npm i
+#     - npm run prettier
+#     - echo "PRETTIER CHECK COMPLETE"
+
+# unit:
+#   stage: test
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+#   script:
+#     - echo "UNIT TESTS"
+#     - echo "Install packages"
+#     - npm i
+#     - npm run prettier
+#     - echo "PRETTIER CHECK COMPLETE"
+
+deploy:
+  stage: deploy
+  script:
+    - cp "$SSH_PRIVATE_KEY" Key.pem
+    - chmod 600 Key.pem
+    - echo "Deploying backend app..."
+    - |
+      ssh -o StrictHostKeyChecking=no -tti "Key.pem" $AWS_USER@$AWS_SERVER << EOF
+        sudo su
+        cd /usr/src/app
+        git pull
+        docker system prune --all --force
+        docker-compose up --build -d
+        exit
+        exit
+      EOF
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"'

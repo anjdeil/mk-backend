@@ -1,0 +1,19 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "./tests",
+  "testEnvironment": "node",
+  "testMatch": [
+    "**/unit/**/*.+(unit.)+(ts|tsx|js)"
+  ],
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "globals": {
+    "environment": "testing",
+    "ts-jest": {
+      "tsconfig": "tsconfig.json",
+      "__DEV__": true
+    },
+    "CHECK_TESTS_STEP_TIME_LIMIT": "false"
+  }
+}
