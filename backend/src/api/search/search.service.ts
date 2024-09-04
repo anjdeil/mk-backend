@@ -77,16 +77,18 @@ export class SearchService
           filters,
         );
         const allPrices = musics.map((item) => item.files.map((file) => file.cost));
+        const maxPrice = Math.max(...allPrices);
+        const minPrice = Math.min(...allPrices);
         result.musics.data = musics.map((item) =>
         {
           return {
             ...item['dataValues'],
-            'arr': allPrices,
             // historyCount: item['dataValues'].history.length,
             // history: undefined,
           };
         });
         result.musics.count = count;
+        result.musics.data.push({ maxPrice, minPrice });
       }
 
       if (!target || target === 'playlists')
