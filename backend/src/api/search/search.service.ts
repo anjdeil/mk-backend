@@ -43,78 +43,70 @@ export class SearchService
         queryoptions,
       });
       const proccessedFilters = processFilters(filters || {});
-      const proccessedQuery: FindOptions<TMusic> =
-        processCommonQueryWithoutSearch(queryoptions, proccessedFilters);
+      const proccessedQuery: FindOptions<TMusic> = processCommonQueryWithoutSearch(queryoptions, proccessedFilters);
 
-      const result: SearchResult = {
+      const result: {
+        users?: { data: any[]; count: number };
+        musics?: {
+          priceRange: { maxPrice: number; minPrice: number; };
+          data: any[];
+          count: number
+        };
+        playlists?: { data: any[]; count: number };
+      } = {
         users: { data: [], count: 0 },
-        musics: {
-          priceRange: {
-            maxPrice: 0,
-            minPrice: 0,
-          },
-          data: [],
-          count: 0,
-        },
+        musics: { data: [], count: 0, priceRange: { maxPrice: 0, minPrice: 0 } },
         playlists: { data: [], count: 0 },
       };
 
       if (!target || target === 'users')
       {
-        const { users, count } = await this.usersRepository.searchUsers(
-          proccessedQuery,
-        );
-        result.users.data = users.map((user) =>
-        {
-          return {
-            ...user['dataValues'],
-          };
-        });
+        const { users, count } = await this.usersRepository.searchUsers(proccessedQuery);
+        result.users.data = users.map((user) => ({
+          ...user['dataValues'],
+        }));
         result.users.count = count;
       }
 
       if (!target || target === 'musics')
       {
-        const { musics, count } = await this.musicRepository.searchMusics2(
-          proccessedQuery,
-          filters,
-        );
-        const allPrices = musics.flatMap((item) => item.files.map((file) => file.cost));
-        const maxPrice = Math.max(...allPrices);
-        const minPrice = Math.min(...allPrices);
-        result.musics.data = musics.map((item) =>
+        const { musics, count } = await this.musicRepository.searchMusics2(proccessedQuery, filters);
+
+        // Check if musics is empty
+        if (musics.length > 0)
         {
-          return {
+          const allPrices = musics.flatMap((item) => item.files.map((file) => file.cost));
+
+          // Ensure allPrices is not empty
+          const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
+          const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
+
+          result.musics.data = musics.map((item) => ({
             ...item['dataValues'],
-            // historyCount: item['dataValues'].history.length,
-            // history: undefined,
-          };
-        });
-        if (!Object(result.musics)) return;
-        result.musics.priceRange = { maxPrice, minPrice };
+          }));
+
+          result.musics.priceRange = { maxPrice, minPrice };
+        } else
+        {
+          result.musics.priceRange = { maxPrice: 0, minPrice: 0 };
+        }
+
         result.musics.count = count;
       }
 
       if (!target || target === 'playlists')
       {
-        const { playlists, count } =
-          await this.playlistsRepository.searchPlaylists(
-            proccessedQuery,
-            proccessedQuery.limit,
-            proccessedQuery.offset,
-          );
-        result.playlists.data = playlists.map((item) =>
-        {
-          return {
-            ...item['dataValues'],
-          };
-        });
+        const { playlists, count } = await this.playlistsRepository.searchPlaylists(proccessedQuery, proccessedQuery.limit, proccessedQuery.offset);
+        result.playlists.data = playlists.map((item) => ({
+          ...item['dataValues'],
+        }));
         result.playlists.count = count;
       }
 
       return result;
     } catch (error)
     {
+      this.logger.error('An error occurred while searching', error.stack);
       throw new InternalServerErrorException(error.message);
     }
   }
