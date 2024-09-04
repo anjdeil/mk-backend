@@ -89,6 +89,7 @@ export class SearchService
             // history: undefined,
           };
         });
+        if (!Object(result.musics)) return;
         result.musics.priceRange = { maxPrice, minPrice };
         result.musics.count = count;
       }
