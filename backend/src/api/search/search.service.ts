@@ -1,4 +1,5 @@
-import {
+import
+{
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -7,11 +8,13 @@ import {
 import { FindOptions } from 'sequelize';
 
 import { SearchFiltersDto } from '../../core/dto';
-import {
+import
+{
   processCommonQueryWithoutSearch,
   processFilters,
 } from '../../core/helpers';
-import {
+import
+{
   MusicsRepository,
   PlaylistsRepository,
   UsersRepository,
@@ -19,17 +22,20 @@ import {
 import { TMusic } from '../../core/types';
 
 @Injectable()
-export class SearchService {
+export class SearchService
+{
   private readonly logger: LoggerService = new Logger(SearchService.name);
 
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly musicRepository: MusicsRepository,
     private readonly playlistsRepository: PlaylistsRepository,
-  ) {}
+  ) { }
 
-  async search2(options: SearchFiltersDto): Promise<any> {
-    try {
+  async search2(options: SearchFiltersDto): Promise<any>
+  {
+    try
+    {
       const { filters, target, ...queryoptions } = options;
       this.logger.debug({
         filters,
@@ -50,11 +56,13 @@ export class SearchService {
         playlists: { data: [], count: 0 },
       };
 
-      if (!target || target === 'users') {
+      if (!target || target === 'users')
+      {
         const { users, count } = await this.usersRepository.searchUsers(
           proccessedQuery,
         );
-        result.users.data = users.map((user) => {
+        result.users.data = users.map((user) =>
+        {
           return {
             ...user['dataValues'],
           };
@@ -62,14 +70,17 @@ export class SearchService {
         result.users.count = count;
       }
 
-      if (!target || target === 'musics') {
+      if (!target || target === 'musics')
+      {
         const { musics, count } = await this.musicRepository.searchMusics2(
           proccessedQuery,
           filters,
         );
-        result.musics.data = musics.map((item) => {
+        result.musics.data = musics.map((item) =>
+        {
           return {
             ...item['dataValues'],
+            'arr': item,
             // historyCount: item['dataValues'].history.length,
             // history: undefined,
           };
@@ -77,14 +88,16 @@ export class SearchService {
         result.musics.count = count;
       }
 
-      if (!target || target === 'playlists') {
+      if (!target || target === 'playlists')
+      {
         const { playlists, count } =
           await this.playlistsRepository.searchPlaylists(
             proccessedQuery,
             proccessedQuery.limit,
             proccessedQuery.offset,
           );
-        result.playlists.data = playlists.map((item) => {
+        result.playlists.data = playlists.map((item) =>
+        {
           return {
             ...item['dataValues'],
           };
@@ -93,7 +106,8 @@ export class SearchService {
       }
 
       return result;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
