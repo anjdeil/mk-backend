@@ -88,7 +88,7 @@ export class SearchService
           };
         });
         result.musics.count = count;
-        result.musics.data.push({ priceRange: { maxPrice, minPrice } });
+        // result.musics.data.push({ priceRange: { maxPrice, minPrice } });
       }
 
       if (!target || target === 'playlists')
