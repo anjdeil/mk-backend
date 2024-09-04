@@ -46,15 +46,16 @@ export class SearchService
       const proccessedQuery: FindOptions<TMusic> =
         processCommonQueryWithoutSearch(queryoptions, proccessedFilters);
 
-      const result: {
-        users?: { data: any[]; count: number };
-        musics?: {
-          priceRange: { maxPrice: number; minPrice: number; }; data: any[]; count: number
-        };
-        playlists?: { data: any[]; count: number };
-      } = {
+      const result: SearchResult = {
         users: { data: [], count: 0 },
-        musics: { data: [], count: 0 },
+        musics: {
+          priceRange: {
+            maxPrice: 0,
+            minPrice: 0,
+          },
+          data: [],
+          count: 0,
+        },
         playlists: { data: [], count: 0 },
       };
 
