@@ -48,7 +48,9 @@ export class SearchService
 
       const result: {
         users?: { data: any[]; count: number };
-        musics?: { data: any[]; count: number };
+        musics?: {
+          priceRange: { maxPrice: number; minPrice: number; }; data: any[]; count: number
+        };
         playlists?: { data: any[]; count: number };
       } = {
         users: { data: [], count: 0 },
@@ -79,7 +81,6 @@ export class SearchService
         const allPrices = musics.flatMap((item) => item.files.map((file) => file.cost));
         const maxPrice = Math.max(...allPrices);
         const minPrice = Math.min(...allPrices);
-        result.musics.data.push({ priceRange: { maxPrice, minPrice } });
         result.musics.data = musics.map((item) =>
         {
           return {
@@ -88,6 +89,7 @@ export class SearchService
             // history: undefined,
           };
         });
+        result.musics.priceRange = { maxPrice, minPrice };
         result.musics.count = count;
       }
 
