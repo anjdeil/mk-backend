@@ -76,11 +76,12 @@ export class SearchService
           proccessedQuery,
           filters,
         );
+        const allPrices = musics.map((item) => item.files.map((file) => file.cost));
         result.musics.data = musics.map((item) =>
         {
           return {
             ...item['dataValues'],
-            'arr': item,
+            'arr': allPrices,
             // historyCount: item['dataValues'].history.length,
             // history: undefined,
           };
