@@ -1,24 +1,24 @@
 import
-  {
-    Body,
-    Controller,
-    Get,
-    Param,
-    Post,
-    Put,
-    Query,
-    Req,
-    UseGuards,
-  } from '@nestjs/common';
+{
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import
-  {
-    ApiBearerAuth,
-    ApiBody,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
-  } from '@nestjs/swagger';
+{
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { ReportsService } from './reports.service';
 import { AllowedRoles } from '../../core/decorators';
@@ -72,7 +72,7 @@ export class ReportsController
   @Post()
   async create(@Body() data: CreateReportsDto, @Req() req: AuthRequest)
   {
-    console.log(data);
+    console.log(req);
     return await this.reportsService.createReport(data, req.user.id);
   }
 
