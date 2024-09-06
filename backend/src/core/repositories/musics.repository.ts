@@ -1,4 +1,5 @@
-import {
+import
+{
   BadRequestException,
   Inject,
   Injectable,
@@ -11,7 +12,8 @@ import { FindOptions, Op, Optional, Sequelize } from 'sequelize';
 import { NullishPropertiesOf } from 'sequelize/lib/utils';
 
 import { FileStorageService } from '../../shared/services';
-import {
+import
+{
   MUSICS_REPOSITORY,
   MUSIC_CATEGORIES_REPOSITORY,
   MUSIC_FILES_REPOSITORY,
@@ -21,7 +23,8 @@ import {
   MUSIC_TYPES_REPOSITORY,
   SALES_REPOSITORY,
 } from '../constants';
-import {
+import
+{
   fullMusicGroupBy,
   historyGroupBy,
   musicGroupBy,
@@ -48,7 +51,8 @@ import Sales from '../models/sales.entity';
 import TrackType from '../models/trackType.entity';
 import User from '../models/user.entity';
 import { SearchFilters } from '../types';
-import {
+import
+{
   CompressedFile,
   TMusic,
   TMusicCreate,
@@ -57,7 +61,8 @@ import {
 import { TUser } from '../types/user';
 
 @Injectable()
-export class MusicsRepository {
+export class MusicsRepository
+{
   private readonly logger: LoggerService = new Logger(MusicsRepository.name);
 
   constructor(
@@ -78,18 +83,21 @@ export class MusicsRepository {
     @Inject(SALES_REPOSITORY)
     private readonly salesRepository: typeof Sales,
     private readonly fileStorageService: FileStorageService,
-  ) {}
+  ) { }
 
   public async create(
     data: Optional<TMusicCreate, NullishPropertiesOf<TMusicCreate>>,
     user: TUser,
-  ): Promise<Music> {
-    try {
+  ): Promise<Music>
+  {
+    try
+    {
       data.artistId = user.id;
       const music = await this.musicsRepository.create(data);
       console.log(music);
       return music;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -97,18 +105,22 @@ export class MusicsRepository {
   public async createRelations(
     musicId: number,
     data: TMusicCreateRelations,
-  ): Promise<boolean> {
-    try {
+  ): Promise<boolean>
+  {
+    try
+    {
       const { categories, moods, keys, instruments, types } = data;
 
       const promiseArray = [];
-      if (Array.isArray(categories)) {
+      if (Array.isArray(categories))
+      {
         promiseArray.push(
           this.musicCategories.bulkCreate(
             categories.map((categoryId) => ({ categoryId, musicId })),
           ),
         );
-      } else if (categories) {
+      } else if (categories)
+      {
         promiseArray.push(
           this.musicCategories.bulkCreate([
             { categoryId: categories, musicId },
@@ -116,33 +128,39 @@ export class MusicsRepository {
         );
       }
 
-      if (Array.isArray(moods)) {
+      if (Array.isArray(moods))
+      {
         promiseArray.push(
           this.musicMoods.bulkCreate(
             moods.map((moodId) => ({ moodId, musicId })),
           ),
         );
-      } else if (moods) {
+      } else if (moods)
+      {
         promiseArray.push(
           this.musicMoods.bulkCreate([{ moodId: moods, musicId }]),
         );
       }
 
-      if (Array.isArray(keys)) {
+      if (Array.isArray(keys))
+      {
         promiseArray.push(
           this.musicKeys.bulkCreate(keys.map((keyId) => ({ keyId, musicId }))),
         );
-      } else if (keys) {
+      } else if (keys)
+      {
         promiseArray.push(this.musicKeys.create({ keyId: keys, musicId }));
       }
 
-      if (Array.isArray(instruments)) {
+      if (Array.isArray(instruments))
+      {
         promiseArray.push(
           this.musicInstruments.bulkCreate(
             instruments.map((instrumentId) => ({ instrumentId, musicId })),
           ),
         );
-      } else if (instruments) {
+      } else if (instruments)
+      {
         promiseArray.push(
           this.musicInstruments.bulkCreate([
             { instrumentId: instruments, musicId },
@@ -150,13 +168,15 @@ export class MusicsRepository {
         );
       }
 
-      if (Array.isArray(types)) {
+      if (Array.isArray(types))
+      {
         promiseArray.push(
           this.musicTypes.bulkCreate(
             types.map((typeId) => ({ typeId, musicId })),
           ),
         );
-      } else if (types) {
+      } else if (types)
+      {
         promiseArray.push(
           this.musicTypes.bulkCreate([{ typeId: types, musicId }]),
         );
@@ -178,7 +198,8 @@ export class MusicsRepository {
       await Promise.all(promiseArray);
       console.log('PROMISE');
       return true;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -186,12 +207,15 @@ export class MusicsRepository {
   public async deleteRelations(
     musicId: number,
     data: Partial<TMusicCreateRelations>,
-  ): Promise<void> {
-    try {
+  ): Promise<void>
+  {
+    try
+    {
       const { categories, moods, keys, instruments, types } = data;
       const promiseArray = [];
       console.log('categories :>> ', categories);
-      if (categories) {
+      if (categories)
+      {
         console.log('test :>> ');
         promiseArray.push(
           this.musicCategories.destroy({
@@ -200,7 +224,8 @@ export class MusicsRepository {
         );
       }
 
-      if (moods) {
+      if (moods)
+      {
         promiseArray.push(
           this.musicMoods.destroy({
             where: { musicId, moodId: moods },
@@ -208,7 +233,8 @@ export class MusicsRepository {
         );
       }
 
-      if (keys) {
+      if (keys)
+      {
         promiseArray.push(
           this.musicKeys.destroy({
             where: { musicId, keyId: keys },
@@ -216,7 +242,8 @@ export class MusicsRepository {
         );
       }
 
-      if (instruments) {
+      if (instruments)
+      {
         promiseArray.push(
           this.musicInstruments.destroy({
             where: { musicId, instrumentId: instruments },
@@ -224,7 +251,8 @@ export class MusicsRepository {
         );
       }
 
-      if (types) {
+      if (types)
+      {
         promiseArray.push(
           this.musicTypes.destroy({
             where: { musicId, typeId: types },
@@ -247,7 +275,8 @@ export class MusicsRepository {
 
       await Promise.all(promiseArray);
       return;
-    } catch (error) {
+    } catch (error)
+    {
       console.log('error :>> ', error);
       throw new InternalServerErrorException(error.message);
     }
@@ -258,8 +287,10 @@ export class MusicsRepository {
     previewTrack: Express.Multer.File;
     userId: number;
     musicId: number;
-  }): Promise<boolean> {
-    try {
+  }): Promise<boolean>
+  {
+    try
+    {
       const { previewImage, previewTrack, userId, musicId } = data;
       const previewImageUrl = await this.fileStorageService.uploadFile(previewImage, BucketType.PREVIEW, `${userId}/${musicId}`, 'cover', true);
       console.log(previewImageUrl);
@@ -267,10 +298,12 @@ export class MusicsRepository {
       console.log(previewTrackUrl);
       // TODO delete if streaming enabled
       let previewCompressedTrackUrl: string;
-      try {
+      try
+      {
         const compressedFile = await this.compressFile(previewTrack);
         previewCompressedTrackUrl = await this.fileStorageService.uploadFile(compressedFile, BucketType.MUSIC_COMPRESSED, `${userId}/${musicId}`, 'demo', true);
-      } catch (error) {
+      } catch (error)
+      {
         this.logger.debug(error);
       }
       // end TODO
@@ -286,7 +319,8 @@ export class MusicsRepository {
         { where: { id: musicId } },
       );
       return true;
-    } catch (error) {
+    } catch (error)
+    {
       this.logger.debug(error);
       throw new InternalServerErrorException(error.message);
     }
@@ -295,12 +329,15 @@ export class MusicsRepository {
   async compressFile(
     file: Pick<Express.Multer.File, 'buffer' | 'originalname' | 'mimetype'>,
     bitrate: 64 | 80 | 96 | 128 = 96,
-  ): Promise<CompressedFile> {
-    if (!file) {
+  ): Promise<CompressedFile>
+  {
+    if (!file)
+    {
       throw new Error('No file provided');
     }
 
-    try {
+    try
+    {
       const encoder = new Lame({
         output: 'buffer',
         bitrate: bitrate,
@@ -309,16 +346,16 @@ export class MusicsRepository {
 
       await encoder.encode();
       const compressedFileBuffer = encoder.getBuffer();
-      const compressedFileName = `${
-        file.originalname.split('.')[0]
-      }-compressed-${bitrate}.mp3`;
+      const compressedFileName = `${file.originalname.split('.')[0]
+        }-compressed-${bitrate}.mp3`;
 
       return {
         mimetype: file.mimetype,
         originalname: compressedFileName,
         buffer: compressedFileBuffer,
       };
-    } catch (error) {
+    } catch (error)
+    {
       this.logger.error('Error compressing the file:', error);
       throw error;
     }
@@ -333,8 +370,10 @@ export class MusicsRepository {
     stemsPrices: number[];
     userId: number;
     musicId: number;
-  }): Promise<boolean> {
-    try {
+  }): Promise<boolean>
+  {
+    try
+    {
       const {
         mp3,
         wav,
@@ -392,13 +431,16 @@ export class MusicsRepository {
       );
 
       return true;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async update(id: number, data: Partial<TMusic>): Promise<Music> {
-    try {
+  public async update(id: number, data: Partial<TMusic>): Promise<Music>
+  {
+    try
+    {
       const [, [updatedMusic]] = await this.musicsRepository.update<Music>(
         data,
         {
@@ -407,7 +449,8 @@ export class MusicsRepository {
         },
       );
       return updatedMusic;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -415,39 +458,46 @@ export class MusicsRepository {
   public async updateRelations(
     musicId: number,
     data: TMusicCreateRelations,
-  ): Promise<boolean> {
-    try {
+  ): Promise<boolean>
+  {
+    try
+    {
       const { categories, moods, keys, instruments, types } = data;
 
-      if (categories && categories.length > 0) {
+      if (categories && categories.length > 0)
+      {
         await this.musicCategories.destroy({ where: { musicId } });
         await this.musicCategories.bulkCreate(
           categories.map((categoryId) => ({ categoryId, musicId })),
         );
       }
 
-      if (moods && moods.length > 0) {
+      if (moods && moods.length > 0)
+      {
         await this.musicMoods.destroy({ where: { musicId } });
         await this.musicMoods.bulkCreate(
           moods.map((moodId) => ({ moodId, musicId })),
         );
       }
 
-      if (keys && keys.length > 0) {
+      if (keys && keys.length > 0)
+      {
         await this.musicKeys.destroy({ where: { musicId } });
         await this.musicKeys.bulkCreate(
           keys.map((keyId) => ({ keyId, musicId })),
         );
       }
 
-      if (instruments && instruments.length > 0) {
+      if (instruments && instruments.length > 0)
+      {
         await this.musicInstruments.destroy({ where: { musicId } });
         await this.musicInstruments.bulkCreate(
           instruments.map((instrumentId) => ({ instrumentId, musicId })),
         );
       }
 
-      if (types && types.length > 0) {
+      if (types && types.length > 0)
+      {
         await this.musicTypes.destroy({ where: { musicId } });
         await this.musicTypes.bulkCreate(
           types.map((typeId) => ({ typeId, musicId })),
@@ -455,18 +505,22 @@ export class MusicsRepository {
       }
 
       return true;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async findOneById(id: number): Promise<Music> {
-    try {
+  public async findOneById(id: number): Promise<Music>
+  {
+    try
+    {
       const music = await this.musicsRepository.findOne<Music>({
         where: { id },
         include: musicInclude,
       });
-      if (!music) {
+      if (!music)
+      {
         throw new BadRequestException('Music not found');
       }
       const favoritesCount = await MusicsFavorites.count({
@@ -483,33 +537,41 @@ export class MusicsRepository {
       music.setDataValue('purchaseCount', purchaseCount);
 
       return music;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async defaultFindAll(filters: FindOptions): Promise<Music[]> {
-    try {
+  public async defaultFindAll(filters: FindOptions): Promise<Music[]>
+  {
+    try
+    {
       return await this.musicsRepository.findAll<Music>(filters);
-    } catch (error) {
+    } catch (error)
+    {
       this.logger.debug(error);
       throw error;
     }
   }
 
-  public async findAll(filters: FindOptions): Promise<Music[]> {
-    try {
+  public async findAll(filters: FindOptions): Promise<Music[]>
+  {
+    try
+    {
       const musics = await this.musicsRepository.findAll<Music>({
         ...filters,
         include: musicInclude,
       });
-      return musics.map((music) => {
+      return musics.map((music) =>
+      {
         const favoritesCount = music.getDataValue('favorites').length;
         const historyCount = music.getDataValue('history').length;
         let purchaseCount = 0;
         music.setDataValue(
           'files',
-          music.getDataValue('files').map((file) => {
+          music.getDataValue('files').map((file) =>
+          {
             purchaseCount += file.sales.length;
             file['dataValues'].sales = undefined;
             return file;
@@ -522,24 +584,30 @@ export class MusicsRepository {
         music.setDataValue('history', undefined);
         return music;
       });
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async countPublishedMusicByUserId(userId: number): Promise<Music[]> {
-    try {
+  public async countPublishedMusicByUserId(userId: number): Promise<Music[]>
+  {
+    try
+    {
       return await this.musicsRepository.findAll({
         attributes: ['id'],
         where: { artistId: userId, status: MusicStatus.PUBLISHED },
       });
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async blockMusicsByUserId(userId: number): Promise<void> {
-    try {
+  public async blockMusicsByUserId(userId: number): Promise<void>
+  {
+    try
+    {
       const musics = await this.musicsRepository.findAll<Music>({
         where: { artistId: userId },
       });
@@ -554,33 +622,42 @@ export class MusicsRepository {
           },
         },
       );
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async unblockMusicsByUserId(userId: number) {
-    try {
+  public async unblockMusicsByUserId(userId: number)
+  {
+    try
+    {
       return await this.musicsRepository.update(
         { status: MusicStatus.APPROVED },
         { where: { artistId: userId, status: MusicStatus.BLOCKED } },
       );
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async incrementCounts(field, musicId): Promise<void> {
-    try {
+  public async incrementCounts(field, musicId): Promise<void>
+  {
+    try
+    {
       await this.musicsRepository.increment(field, { where: { id: musicId } });
       return;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async searchMusics(options): Promise<Music[]> {
-    try {
+  public async searchMusics(options): Promise<Music[]>
+  {
+    try
+    {
       const order = [];
       let where: any = {
         status: MusicStatus.PUBLISHED,
@@ -588,11 +665,14 @@ export class MusicsRepository {
       let userWhere = {};
       let relevanceRange: Date;
 
-      if (options.order) {
-        if (musicOrderFields.includes(options.order[0][0])) {
+      if (options.order)
+      {
+        if (musicOrderFields.includes(options.order[0][0]))
+        {
           order.push([options.order[0]]);
         }
-      } else {
+      } else
+      {
         order.push(['listenCount', 'DESC']);
       }
 
@@ -607,14 +687,18 @@ export class MusicsRepository {
         ...filters
       } = options.filters || {};
 
-      if (filters) {
-        for (const [key, value] of Object.entries(filters)) {
-          if (musicOrderFields.includes(key)) {
+      if (filters)
+      {
+        for (const [key, value] of Object.entries(filters))
+        {
+          if (musicOrderFields.includes(key))
+          {
             where = {
               ...where,
               [key]: value,
             };
-          } else {
+          } else
+          {
             userWhere = {
               ...userWhere,
               [key]: value,
@@ -623,11 +707,14 @@ export class MusicsRepository {
         }
       }
 
-      if (options.search) {
+      if (options.search)
+      {
         where = {
           ...where,
-          [Op.or]: options.search.fields.map((item) => {
-            if (musicOrderFields.includes(item)) {
+          [Op.or]: options.search.fields.map((item) =>
+          {
+            if (musicOrderFields.includes(item))
+            {
               return {
                 [item]: { [Op.iLike]: `%${options.search.value}%` },
               };
@@ -687,10 +774,10 @@ export class MusicsRepository {
           attributes: ['id', 'cost', 'type'],
           ...(cost
             ? {
-                where: {
-                  cost,
-                },
-              }
+              where: {
+                cost,
+              },
+            }
             : {}),
           required: true,
           as: 'files',
@@ -715,7 +802,8 @@ export class MusicsRepository {
         },
       ];
 
-      if (relevance) {
+      if (relevance)
+      {
         relevanceRange = getRelevanceTimeRange(relevance);
       }
 
@@ -748,13 +836,16 @@ export class MusicsRepository {
         });
 
       return musics;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async searchMusics2(options: any, plainFilters: SearchFilters) {
-    try {
+  public async searchMusics2(options: any, plainFilters: SearchFilters)
+  {
+    try
+    {
       const order = [];
       let where: any = {
         status: MusicStatus.PUBLISHED,
@@ -762,8 +853,10 @@ export class MusicsRepository {
       let userWhere = {};
       let relevanceRange: Date;
 
-      if (options.order) {
-        if (musicOrderFields.includes(options.order[0][0])) {
+      if (options.order)
+      {
+        if (musicOrderFields.includes(options.order[0][0]))
+        {
           order.push([options.order[0]]);
         }
       }
@@ -775,8 +868,10 @@ export class MusicsRepository {
 
       this.logger.debug(options.filters);
 
-      if (filters) {
-        for (const [key, value] of Object.entries(filters)) {
+      if (filters)
+      {
+        for (const [key, value] of Object.entries(filters))
+        {
           if (
             ['categories', 'instruments', 'keys', 'moods', 'types'].includes(
               key,
@@ -784,12 +879,14 @@ export class MusicsRepository {
           )
             continue;
 
-          if (musicOrderFields.includes(key)) {
+          if (musicOrderFields.includes(key))
+          {
             where = {
               ...where,
               [key]: value,
             };
-          } else {
+          } else
+          {
             userWhere = {
               ...userWhere,
               [key]: value,
@@ -797,11 +894,14 @@ export class MusicsRepository {
           }
         }
       }
-      if (options.search) {
+      if (options.search)
+      {
         where = {
           ...where,
-          [Op.or]: options.search.fields.map((item) => {
-            if (musicOrderFields.includes(item)) {
+          [Op.or]: options.search.fields.map((item) =>
+          {
+            if (musicOrderFields.includes(item))
+            {
               return {
                 [item]: { [Op.iLike]: `%${options.search.value}%` },
               };
@@ -809,7 +909,8 @@ export class MusicsRepository {
           }),
         };
       }
-      if (plainFilters) {
+      if (plainFilters)
+      {
         const { categories, instruments, keys, moods, types } = plainFilters;
 
         const plainFilterMapping: { field: string; values: any | any[] }[] = [
@@ -827,8 +928,10 @@ export class MusicsRepository {
         ];
         const filterMapping: { field: string; values: number | number[] }[] =
           [];
-        for (const filter of plainFilterMapping) {
-          if (filter.values) {
+        for (const filter of plainFilterMapping)
+        {
+          if (filter.values)
+          {
             filterMapping.push({
               field: filter.field,
               values:
@@ -841,12 +944,15 @@ export class MusicsRepository {
 
         const whereFilters = [];
 
-        for (const filter of filterMapping) {
-          if (filter.values) {
+        for (const filter of filterMapping)
+        {
+          if (filter.values)
+          {
             whereFilters[filter.field] = { [Op.contains]: filter.values };
           }
         }
-        if (whereFilters) {
+        if (whereFilters)
+        {
           where = { ...where, ...whereFilters };
         }
       }
@@ -863,13 +969,13 @@ export class MusicsRepository {
         {
           model: MusicFiles,
           attributes: ['id', 'cost', 'type'],
-          ...(cost
-            ? {
-                where: {
-                  cost,
-                },
-              }
-            : {}),
+          // ...(cost
+          //   ? {
+          //       where: {
+          //         cost,
+          //       },
+          //     }
+          //   : {}),
           required: true,
           as: 'files',
         },
@@ -893,7 +999,8 @@ export class MusicsRepository {
         },
       ];
 
-      if (relevance) {
+      if (relevance)
+      {
         relevanceRange = getRelevanceTimeRange(relevance);
       }
 
@@ -917,8 +1024,16 @@ export class MusicsRepository {
           include: includes,
         });
 
-      return { musics, count };
-    } catch (error) {
+      const allPrices = musics.flatMap((item) => item.files.map((file) => file.cost));
+      const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
+      const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
+      const filteredMusics = cost
+        ? musics.filter((music) => music.files.some((file) => file.cost === cost))
+        : musics;
+
+      return { filteredMusics, count, maxPrice, minPrice };
+    } catch (error)
+    {
       this.logger.error(error);
       throw new InternalServerErrorException(error.message);
     }
