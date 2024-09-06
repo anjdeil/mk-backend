@@ -72,7 +72,7 @@ export class ReportsController
   @Post()
   async create(@Body() data: CreateReportsDto, @Req() req: AuthRequest)
   {
-    console.log(req.body.reportedsubjectid);
+    console.log('REEEEEEEE', data);
     return await this.reportsService.createReport(data, req.user.id);
   }
 
