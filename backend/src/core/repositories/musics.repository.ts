@@ -1027,9 +1027,10 @@ export class MusicsRepository
       const allPrices = rows.flatMap((item) => item.files.map((file) => file.cost));
       const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
-      const musics = cost
-        ? rows.filter((music) => music.files.some((file) => file.cost === cost))
-        : rows;
+      // const musics = cost
+      //   ? rows.filter((music) => music.files.some((file) => file.cost === cost))
+      //   : rows;
+      const musics = rows;
 
       return { musics, count, maxPrice, minPrice };
     } catch (error)
