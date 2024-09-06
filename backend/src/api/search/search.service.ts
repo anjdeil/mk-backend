@@ -71,12 +71,11 @@ export class SearchService
       if (!target || target === 'musics')
       {
         const { musics, count } = await this.musicRepository.searchMusics2(proccessedQuery, filters);
-        const resp = await this.musicRepository.searchMusics({});
-        console.log('OOOOOOOOO', resp);
+        const allMusics = await this.musicRepository.searchMusics({});
 
         if (musics.length > 0)
         {
-          const allPrices = musics.flatMap((item) => item.files.map((file) => file.cost));
+          const allPrices = allMusics.flatMap((item) => item.files.map((file) => file.cost));
 
           // Ensure allPrices is not empty
           const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
