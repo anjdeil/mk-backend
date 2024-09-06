@@ -1004,7 +1004,7 @@ export class MusicsRepository
         relevanceRange = getRelevanceTimeRange(relevance);
       }
 
-      const { count, rows: musics } =
+      const { count, rows } =
         await this.musicsRepository.findAndCountAll({
           attributes: {
             exclude: [
@@ -1024,14 +1024,14 @@ export class MusicsRepository
           include: includes,
         });
 
-      const allPrices = musics.flatMap((item) => item.files.map((file) => file.cost));
+      const allPrices = rows.flatMap((item) => item.files.map((file) => file.cost));
       const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
-      const filteredMusics = cost
-        ? musics.filter((music) => music.files.some((file) => file.cost === cost))
-        : musics;
+      const musics = cost
+        ? rows.filter((music) => music.files.some((file) => file.cost === cost))
+        : rows;
 
-      return { filteredMusics, count, maxPrice, minPrice };
+      return { musics, count, maxPrice, minPrice };
     } catch (error)
     {
       this.logger.error(error);

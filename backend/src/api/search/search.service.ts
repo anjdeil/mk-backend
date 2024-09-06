@@ -70,9 +70,9 @@ export class SearchService
 
       if (!target || target === 'musics')
       {
-        const { filteredMusics, count, maxPrice, minPrice } = await this.musicRepository.searchMusics2(proccessedQuery, filters);
+        const { musics, count, maxPrice, minPrice } = await this.musicRepository.searchMusics2(proccessedQuery, filters);
 
-        if (filteredMusics.length > 0)
+        if (musics.length > 0)
         {
           // const allPrices = musics.flatMap((item) => item.files.map((file) => file.cost));
 
@@ -80,7 +80,7 @@ export class SearchService
           // const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
           // const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
 
-          result.musics.data = filteredMusics.map((item) => ({
+          result.musics.data = musics.map((item) => ({
             ...item['dataValues'],
           }));
 
