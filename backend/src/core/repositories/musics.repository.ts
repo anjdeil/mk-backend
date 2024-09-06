@@ -1025,7 +1025,8 @@ export class MusicsRepository
         });
 
       const allPrices = rows.flatMap((item) => item.files.map((file) => file.cost));
-      const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
+      // const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
+      const maxPrice = cost;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
       console.dir('COOOOONST', cost);
       // const musics = cost
