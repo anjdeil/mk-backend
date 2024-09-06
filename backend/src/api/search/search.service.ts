@@ -70,6 +70,7 @@ export class SearchService
 
       if (!target || target === 'musics')
       {
+        console.dir('COOOOONST', filters);
         const { musics, count, maxPrice, minPrice } = await this.musicRepository.searchMusics2(proccessedQuery, filters);
 
         if (musics.length > 0)
