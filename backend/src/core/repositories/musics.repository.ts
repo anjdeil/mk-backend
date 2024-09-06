@@ -1028,6 +1028,7 @@ export class MusicsRepository
       // const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const maxPrice = cost;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
+      console.log('SSSSSS', rows);
       const musics = rows.filter((music) =>
         music.files.some((file) =>
           file.cost >= cost.gte && file.cost <= cost.lte
