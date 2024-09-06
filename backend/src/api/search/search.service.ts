@@ -71,8 +71,9 @@ export class SearchService
       if (!target || target === 'musics')
       {
         const { musics, count } = await this.musicRepository.searchMusics2(proccessedQuery, filters);
+        const resp = await this.musicRepository.searchMusics({});
+        console.log('OOOOOOOOO', resp);
 
-        // Check if musics is empty
         if (musics.length > 0)
         {
           const allPrices = musics.flatMap((item) => item.files.map((file) => file.cost));
