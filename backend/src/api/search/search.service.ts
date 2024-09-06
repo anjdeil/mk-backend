@@ -74,12 +74,6 @@ export class SearchService
 
         if (musics.length > 0)
         {
-          // const allPrices = musics.flatMap((item) => item.files.map((file) => file.cost));
-
-          // Ensure allPrices is not empty
-          // const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
-          // const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
-
           result.musics.data = musics.map((item) => ({
             ...item['dataValues'],
           }));
