@@ -1036,7 +1036,7 @@ export class MusicsRepository
       if (cost)
       {
         musics = rows.filter(track =>
-          track.files.some(file => file.cost >= cost.gte && file.cost <= cost.lte));
+          track.files.some(file => file.cost >= cost[gte] && file.cost <= cost[lte]));
       } else
       {
         musics = rows;
