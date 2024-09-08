@@ -1025,15 +1025,12 @@ export class MusicsRepository
         });
 
       const allPrices = rows.flatMap((item) => item.files.map((file) => file.cost));
-      // const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
-      const maxPrice = cost;
+      const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
-      // const musics = rows.filter((music) =>
-      //   music.files.some((file) =>
-      //     file.cost >= cost.gte && file.cost <= cost.lte
-      //   )
-      // );
-      const musics = rows;
+      const musics = rows.filter(track =>
+        track.files.some(file => file.cost >= cost.gte && file.cost <= cost.lte));
+
+      // const musics = rows;
 
       return { musics, count, maxPrice, minPrice };
     } catch (error)
