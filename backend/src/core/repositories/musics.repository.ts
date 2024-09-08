@@ -1027,9 +1027,11 @@ export class MusicsRepository
       const allPrices = rows.flatMap((item) => item.files.map((file) => file.cost));
       const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
+      const lte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('lte'));
+      const gte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('gte'));
       console.log('ROWS', rows[0].files[0].cost);
       console.log('COST', cost);
-      console.log('RESULT', rows[0].files[0].cost <= cost.lte);
+      console.log('RESULT', rows[0].files[0].cost <= cost[lte]);
       let musics;
       if (cost)
       {
