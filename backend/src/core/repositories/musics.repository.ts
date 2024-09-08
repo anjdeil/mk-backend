@@ -1029,8 +1029,16 @@ export class MusicsRepository
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
       console.log('ROWS', rows[0].files[0].cost);
       console.log('COST', cost);
-      const musics = rows.filter(track =>
-        track.files.some(file => file.cost >= cost.gte && file.cost <= cost.lte));
+      console.log('RESULT', rows[0].files[0].cost <= cost.lte);
+      let musics;
+      if (cost)
+      {
+        musics = rows.filter(track =>
+          track.files.some(file => file.cost >= cost.gte && file.cost <= cost.lte));
+      } else
+      {
+        musics = rows;
+      }
 
       // const musics = rows;
 
