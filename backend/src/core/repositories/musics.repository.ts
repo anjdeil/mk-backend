@@ -1027,6 +1027,8 @@ export class MusicsRepository
       const allPrices = rows.flatMap((item) => item.files.map((file) => file.cost));
       const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
+      console.log('ROWS', rows);
+      console.log('COST', cost);
       const musics = rows.filter(track =>
         track.files.some(file => file.cost >= cost.gte && file.cost <= cost.lte));
 
