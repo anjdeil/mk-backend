@@ -1024,7 +1024,17 @@ export class MusicsRepository
           include: includes,
         });
 
-      const allPrices = rows.flatMap(item => item.files?.map(file => file.cost) || []);
+      // const allPrices = rows.flatMap(item => item.files?.map(file => {
+      //   file.type === 'mp3' return file.cost;
+      // }) || []);
+
+      const allPrices = rows.flatMap(item =>
+        item.files?.map(file =>
+        {
+          if (file.type === 'mp3') return file.cost;
+          return null;
+        }).filter(cost => cost !== null) || []);
+
       const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
 
@@ -1034,7 +1044,7 @@ export class MusicsRepository
       if (cost)
       {
         musics = rows.filter(track =>
-          track.files.some(file => file.type === 'mp3' && file.cost >= cost[gte] && file.cost <= cost[lte]));
+          track.files.some(file => file.cost >= cost[gte] && file.cost <= cost[lte]));
       } else
       {
         musics = rows;
