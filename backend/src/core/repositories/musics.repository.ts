@@ -1036,7 +1036,7 @@ export class MusicsRepository
 
       const lte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('lte'));
       const gte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('gte'));
-      console.log('MIN', gte);
+      console.log('MIN', cost[gte]);
 
       let musics;
       if (cost && cost[lte] !== 0)
