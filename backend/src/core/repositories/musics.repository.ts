@@ -1024,21 +1024,22 @@ export class MusicsRepository
           include: includes,
         });
 
-      const allPrices = rows.flatMap((item) => item.files.map((file) => file.cost));
+      const allPrices = rows.flatMap(item => item.files?.map(file => file.cost) || []);
       const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
-      const lte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('lte'));
-      const gte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('gte'));
-      console.log('First', cost["gte"]);
-      console.log('Second', cost[gte]);
+
       let musics;
       if (cost)
       {
-        musics = rows.filter(track =>
-          track.files.some(file => file.cost >= cost[gte] && file.cost <= cost[lte]));
-      } else
-      {
-        musics = rows;
+        const lte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('lte'));
+        const gte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('gte'));
+
+        if (lte && gte && cost[gte] && cost[lte])
+        {
+          musics = rows.filter(track =>
+            track.files.some(file => file.cost >= cost[gte] && file.cost <= cost[lte])
+          );
+        }
       }
       return { musics, count, maxPrice, minPrice };
     } catch (error)
