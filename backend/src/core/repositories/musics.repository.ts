@@ -1024,10 +1024,6 @@ export class MusicsRepository
           include: includes,
         });
 
-      // const allPrices = rows.flatMap(item => item.files?.map(file => {
-      //   file.type === 'mp3' return file.cost;
-      // }) || []);
-
       const allPrices = rows.flatMap(item =>
         item.files?.map(file =>
         {
