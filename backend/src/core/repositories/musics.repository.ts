@@ -1038,7 +1038,7 @@ export class MusicsRepository
       const gte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('gte'));
 
       let musics;
-      if (cost && cost[gte] !== null && cost[lte] !== null)
+      if (cost && cost[lte] !== 0)
       {
         musics = rows.filter(track =>
           track.files.some(file => file.cost >= cost[gte] && file.cost <= cost[lte]));
