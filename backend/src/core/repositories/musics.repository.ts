@@ -1033,13 +1033,11 @@ export class MusicsRepository
       {
         const lte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('lte'));
         const gte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('gte'));
-
-        if (lte && gte && cost[gte] && cost[lte])
-        {
-          musics = rows.filter(track =>
-            track.files.some(file => file.cost >= cost[gte] && file.cost <= cost[lte])
-          );
-        }
+        musics = rows.filter(track =>
+          track.files.some(file => file.cost >= cost[gte] && file.cost <= cost[lte]));
+      } else
+      {
+        musics = rows;
       }
       return { musics, count, maxPrice, minPrice };
     } catch (error)
