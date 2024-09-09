@@ -1029,9 +1029,8 @@ export class MusicsRepository
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
       const lte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('lte'));
       const gte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('gte'));
-      console.log('ROWS', rows[0].files[0].cost);
-      console.log('COST', cost);
-      console.log('RESULT', rows[0].files[0].cost <= cost[lte]);
+      console.log('First', cost["gte"]);
+      console.log('Second', cost[gte]);
       let musics;
       if (cost)
       {
@@ -1041,9 +1040,6 @@ export class MusicsRepository
       {
         musics = rows;
       }
-
-      // const musics = rows;
-
       return { musics, count, maxPrice, minPrice };
     } catch (error)
     {
