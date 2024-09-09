@@ -1031,6 +1031,8 @@ export class MusicsRepository
           return null;
         }).filter(cost => cost !== null) || []);
 
+      console.log('REEEEES', allPrices);
+
       const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
 
