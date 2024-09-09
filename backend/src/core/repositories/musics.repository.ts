@@ -1036,13 +1036,12 @@ export class MusicsRepository
 
       const lte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('lte'));
       const gte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('gte'));
-      console.log('MIN', cost[gte]);
 
       let musics;
       if (cost && cost[lte] !== 0)
       {
         musics = rows.filter(track => track.files.some(file =>
-          file.type === 'mp3' && file.cost >= cost.gte && file.cost <= cost.lte));
+          file.type === 'mp3' && file.cost >= cost[gte] && file.cost <= cost[lte]));
       } else
       {
         musics = rows;
