@@ -8,7 +8,7 @@ export type TReport = {
   status?: ReportStatus;
   managerId?: number;
   musicId: number;
-  reportedsubjectid?: number;
+  subjectid?: number;
   user?: TUser;
   manager?: TUser;
 } & TDefaultModel;

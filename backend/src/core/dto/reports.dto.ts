@@ -17,7 +17,7 @@ export class CreateReportsDto
   @ApiProperty()
   @IsNumber()
   @IsOptional()
-  reportedsubjectid: number;
+  subjectid: number;
 }
 
 export class UpdateReportsDto

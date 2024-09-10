@@ -72,8 +72,11 @@ export class ReportsController
   @Post()
   async create(@Body() data: CreateReportsDto, @Req() req: AuthRequest)
   {
-    console.log('REEEEEEEE', data);
-    return await this.reportsService.createReport(data, req.user.id);
+    const report = await this.reportsService.createReport(data, req.user.id);
+    return {
+      message: 'Report successfully created',
+      report: report,
+    }
   }
 
   @ApiBearerAuth()
