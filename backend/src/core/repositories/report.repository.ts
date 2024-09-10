@@ -23,8 +23,7 @@ export class ReportRepository
     try
     {
       console.log('WAW', data);
-      // await this.reportRepository.create(data);
-      await this.reportRepository.save(data);
+      await this.reportRepository.create(data);
     } catch (error)
     {
       throw new InternalServerErrorException(error.message);
