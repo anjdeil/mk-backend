@@ -1,4 +1,5 @@
-import {
+import
+{
   Table,
   Model,
   Column,
@@ -13,7 +14,8 @@ import { ReportStatus } from '../enums/reports';
 import { TReport } from '../types/reports';
 
 @Table({ tableName: 'reports', freezeTableName: true, timestamps: false })
-export default class Reports extends Model<TReport> {
+export default class Reports extends Model<TReport>
+{
   @Column({
     allowNull: false,
     type: DataType.STRING,
@@ -33,6 +35,19 @@ export default class Reports extends Model<TReport> {
     type: DataType.INTEGER,
   })
   managerId: number;
+
+  @ForeignKey(() => User)
+  @Column({
+    allowNull: true,
+    type: DataType.INTEGER,
+  })
+  subjectid: number;
+
+  // @Column({
+  //   allowNull: true,
+  //   type: DataType.INTEGER,
+  // })
+  // subjectid: number;
 
   @ForeignKey(() => Music)
   @Column({
