@@ -1,9 +1,9 @@
 import
-  {
-    Inject,
-    Injectable,
-    InternalServerErrorException,
-  } from '@nestjs/common';
+{
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { FindOptions } from 'sequelize';
 
 import { REPORTS_REPOSITORY } from '../constants';
@@ -23,7 +23,8 @@ export class ReportRepository
     try
     {
       console.log('WAW', data);
-      await this.reportRepository.create(data);
+      // await this.reportRepository.create(data);
+      await this.reportRepository.save(data);
     } catch (error)
     {
       throw new InternalServerErrorException(error.message);
