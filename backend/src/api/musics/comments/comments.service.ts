@@ -30,7 +30,6 @@ export class CommentsService
     {
       data.userId = user.id;
       const comment = await this.commentsRepository.create(data);
-      console.log('commentData :>> ', data);
       if (data.parentCommentId)
       {
         const parentComment = await this.commentsRepository.findOneById(
@@ -40,6 +39,7 @@ export class CommentsService
           type: NotificationType.COMMENTED_TO_COMMENT,
           userId: parentComment.userId,
           message: NotificationMessages.COMMENTED_TO_COMMENT(user.name),
+          link: `/track/${data.musicId}`,
         });
       } else
       {

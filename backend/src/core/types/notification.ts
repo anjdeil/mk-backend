@@ -9,4 +9,5 @@ export type TNotification = {
   read?: boolean;
   userId: number;
   user?: TUser;
+  link?: string;
 } & TDefaultModel;
