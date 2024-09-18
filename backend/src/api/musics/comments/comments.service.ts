@@ -5,11 +5,11 @@ import { NotificationMessages } from '../../../core/constants/notifications';
 import { NotificationType } from '../../../core/enums';
 import { MusicsComments } from '../../../core/models';
 import
-  {
-    MusicsCommentsRepository,
-    MusicsRepository,
-    NotificationsRepository,
-  } from '../../../core/repositories';
+{
+  MusicsCommentsRepository,
+  MusicsRepository,
+  NotificationsRepository,
+} from '../../../core/repositories';
 import { TUser } from '../../../core/types';
 
 @Injectable()
@@ -30,14 +30,12 @@ export class CommentsService
     {
       data.userId = user.id;
       const comment = await this.commentsRepository.create(data);
-
+      console.log('commentData :>> ', data);
       if (data.parentCommentId)
       {
         const parentComment = await this.commentsRepository.findOneById(
           data.parentCommentId,
         );
-        console.log('parentComment :>> ', parentComment);
-        console.log('commentData :>> ', data);
         await this.notificationRepository.create({
           type: NotificationType.COMMENTED_TO_COMMENT,
           userId: parentComment.userId,
@@ -98,12 +96,11 @@ export class CommentsService
   {
     try
     {
-      console.log('id :>> ', id);
       const comments = await this.commentsRepository.findAllByMusic(id);
       return { comments };
     } catch (error)
     {
-      console.log('error :>> ', error);
+      console.error('error :>> ', error);
       throw new InternalServerErrorException(error.message);
     }
   }
