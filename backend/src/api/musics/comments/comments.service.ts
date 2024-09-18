@@ -51,6 +51,7 @@ export class CommentsService
             user.name,
             music.title,
           ),
+          link: `/track/${data.musicId}`,
         });
       }
 
