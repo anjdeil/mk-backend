@@ -1,42 +1,42 @@
 import { HttpService } from '@nestjs/axios';
 import
-  {
-    BadRequestException,
-    ForbiddenException,
-    Injectable,
-    InternalServerErrorException,
-    Logger,
-    LoggerService,
-  } from '@nestjs/common';
+{
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  LoggerService,
+} from '@nestjs/common';
 import { FindOptions } from 'sequelize';
 
 import { NotificationMessages } from '../../core/constants/notifications';
 import
-  {
-    BucketType,
-    MusicStatus,
-    NotificationType,
-    Roles,
-  } from '../../core/enums';
+{
+  BucketType,
+  MusicStatus,
+  NotificationType,
+  Roles,
+} from '../../core/enums';
 import { byteToMb } from '../../core/helpers';
 import { Music } from '../../core/models';
 import
-  {
-    CartRepository,
-    MusicsFilesRepository,
-    MusicsRepository,
-    NotificationsRepository,
-    SalesRepository,
-  } from '../../core/repositories';
+{
+  CartRepository,
+  MusicsFilesRepository,
+  MusicsRepository,
+  NotificationsRepository,
+  SalesRepository,
+} from '../../core/repositories';
 import { FollowRepository } from '../../core/repositories/follow.repository';
 import
-  {
-    CompressResult,
-    TMusicCreate,
-    TMusicCreateFiles,
-    TMusicUpdate,
-    TUser,
-  } from '../../core/types';
+{
+  CompressResult,
+  TMusicCreate,
+  TMusicCreateFiles,
+  TMusicUpdate,
+  TUser,
+} from '../../core/types';
 import { FileStorageService } from '../../shared/services';
 
 @Injectable()
@@ -279,6 +279,7 @@ export class MusicsService
           type: NotificationType.MUSIC_PUBLISHED,
           userId: music.artistId,
           message: NotificationMessages.MUSIC_PUBLISHED(music.title),
+          link: `/track/${music.id}`,
         });
 
         const ids = await this.followRepository.getAllFollowersIdsByFollowerId(
@@ -306,6 +307,7 @@ export class MusicsService
           type: NotificationType.MUSIC_DECLINED,
           userId: music.artistId,
           message: NotificationMessages.MUSIC_DECLINED(music.title),
+          link: `/my-profile-seller`,
         });
       }
     }
