@@ -265,6 +265,7 @@ export class StripeService
               type: NotificationType.SUBSCRIPTION_EXPIRED,
               userId: +data.metadata.userId,
               message: NotificationMessages.SUBSCRIPTION_EXPIRED,
+              link: `/buy-subscription`,
             });
           }
           break;

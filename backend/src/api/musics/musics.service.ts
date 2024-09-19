@@ -223,6 +223,7 @@ export class MusicsService
         type: NotificationType.MUSIC_MAX_PUBLISHED,
         userId: user.id,
         message: NotificationMessages.MUSIC_MAX_PUBLISHED,
+        link: `/buy-subscription`,
       });
     }
     return await this.musicsRepository.findOneById(music.id);
@@ -296,7 +297,7 @@ export class MusicsService
               title: music.title,
               avatarUrl: music.previewImage || '',
             }),
-            link: `/my-profile-seller`,
+            link: `/musicians-page/${music.artistId}`,
           });
         }
       }

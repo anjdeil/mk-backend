@@ -122,7 +122,7 @@ export class WithdrawalService
           type: NotificationType.WITHDRAWAL_REJECTED,
           userId: withdrawal.userId,
           message: NotificationMessages.WITHDRAWAL_REJECTED(withdrawal.amount),
-          link: `/my-profile-seller`,
+          link: `/my-profile-seller-settings`,
         });
       }
 
@@ -132,7 +132,7 @@ export class WithdrawalService
           type: NotificationType.WITHDRAWAL,
           userId: withdrawal.userId,
           message: NotificationMessages.WITHDRAWAL(withdrawal.amount),
-          link: `/upload-track`,
+          link: `/my-profile-seller-settings`,
         });
       }
 
