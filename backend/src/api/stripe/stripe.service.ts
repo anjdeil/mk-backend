@@ -355,6 +355,7 @@ export class StripeService
                     item.music.title,
                     user.name,
                   ),
+                  link: `/music/${item.music.id}`,
                 });
               });
 
