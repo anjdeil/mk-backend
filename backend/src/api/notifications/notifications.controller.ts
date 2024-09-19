@@ -1,20 +1,22 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Put,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import
+  {
+    Body,
+    Controller,
+    Get,
+    Post,
+    Put,
+    Req,
+    UseGuards,
+  } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import
+  {
+    ApiBearerAuth,
+    ApiBody,
+    ApiOperation,
+    ApiResponse,
+    ApiTags,
+  } from '@nestjs/swagger';
 
 import { NotificationsService } from './notifications.service';
 import { IsAdminGuard } from '../../core/guards';
@@ -22,15 +24,17 @@ import { AuthRequest } from '../../core/types/common';
 
 @ApiTags('notifications')
 @Controller('notifications')
-export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) {}
+export class NotificationsController
+{
+  constructor(private readonly notificationsService: NotificationsService) { }
 
   @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'Get all notifications' })
   @ApiOperation({ summary: 'Get all notifications' })
   @UseGuards(AuthGuard('jwt'))
   @Get()
-  async getAllNotifications(@Req() req: AuthRequest) {
+  async getAllNotifications(@Req() req: AuthRequest)
+  {
     return await this.notificationsService.findAllByUser(req.user.id);
   }
 
@@ -39,7 +43,8 @@ export class NotificationsController {
   @ApiOperation({ summary: 'Get all unread notifications' })
   @UseGuards(AuthGuard('jwt'))
   @Get('unread')
-  async getAllUnreadNotifications(@Req() req: AuthRequest) {
+  async getAllUnreadNotifications(@Req() req: AuthRequest)
+  {
     return await this.notificationsService.findAllUnreadByUser(req.user.id);
   }
 
@@ -48,7 +53,8 @@ export class NotificationsController {
   @ApiOperation({ summary: 'Mark all notifications as read' })
   @UseGuards(AuthGuard('jwt'))
   @Put('readAll')
-  async markAllAsRead(@Req() req: AuthRequest) {
+  async markAllAsRead(@Req() req: AuthRequest)
+  {
     return await this.notificationsService.setReadForAllNotifications(
       req.user.id,
     );
@@ -75,7 +81,8 @@ export class NotificationsController {
     },
   })
   @Put('read')
-  async markNotificationsAsRead(@Req() req: AuthRequest) {
+  async markNotificationsAsRead(@Req() req: AuthRequest)
+  {
     return await this.notificationsService.setReadForNotifications(
       req.user.id,
       req.body.id,
@@ -84,7 +91,9 @@ export class NotificationsController {
 
   @UseGuards(IsAdminGuard)
   @Post('admin')
-  async createNotificationFromAdmin(@Body() body) {
+  async createNotificationFromAdmin(@Body() body)
+  {
+    console.log('Notification body:', body);
     return await this.notificationsService.createNotification(body);
   }
 }
