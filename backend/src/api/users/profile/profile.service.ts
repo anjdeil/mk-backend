@@ -1,26 +1,29 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import
+  {
+    BadRequestException,
+    ForbiddenException,
+    Injectable,
+    InternalServerErrorException,
+  } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { NotificationMessages } from '../../../core/constants/notifications';
 import { BucketType, NotificationType, Roles } from '../../../core/enums';
 import { BillingAddress, Payout, User } from '../../../core/models';
-import {
-  NotificationsRepository,
-  TransactionsRepository,
-  UsersRepository,
-} from '../../../core/repositories';
+import
+  {
+    NotificationsRepository,
+    TransactionsRepository,
+    UsersRepository,
+  } from '../../../core/repositories';
 import { FollowRepository } from '../../../core/repositories/follow.repository';
 import { getNotificationTemplate } from '../../../core/templates/notificationTemplate';
 import { TUser } from '../../../core/types';
 import { EmailService, FileStorageService } from '../../../shared/services';
 
 @Injectable()
-export class ProfileService {
+export class ProfileService
+{
   constructor(
     private readonly userRepository: UsersRepository,
     private readonly fileStorageService: FileStorageService,
@@ -28,15 +31,18 @@ export class ProfileService {
     private readonly notificationsRepository: NotificationsRepository,
     private readonly followsRepository: FollowRepository,
     private readonly emailService: EmailService,
-  ) {}
+  ) { }
 
-  public async getProfile(userId: number): Promise<TUser> {
-    try {
+  public async getProfile(userId: number): Promise<TUser>
+  {
+    try
+    {
       const user = await this.userRepository.findOneById(userId, {
         attributes: { exclude: ['password'] },
         include: [BillingAddress, Payout],
       });
-      if (!user) {
+      if (!user)
+      {
         throw new BadRequestException('No such user');
       }
       const balance = await this.transactionsRepository.countBalance(userId);
@@ -44,25 +50,32 @@ export class ProfileService {
         userId,
       );
       return { ...user['dataValues'], balance, followersCount };
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async getBalance(userId: number): Promise<{ balance: number }> {
-    try {
+  public async getBalance(userId: number): Promise<{ balance: number }>
+  {
+    try
+    {
       const balance = await this.transactionsRepository.countBalance(userId);
       return { balance };
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
   public async requestProfileVerification(
     user: TUser,
-  ): Promise<{ result: User }> {
-    try {
-      if (user.onVerification) {
+  ): Promise<{ result: User }>
+  {
+    try
+    {
+      if (user.onVerification)
+      {
         throw new ForbiddenException('User is already is under verification');
       }
 
@@ -86,7 +99,8 @@ export class ProfileService {
       );
 
       return { result };
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -94,10 +108,13 @@ export class ProfileService {
   public async updateProfile(
     user: TUser,
     data: Partial<TUser>,
-  ): Promise<{ result: User }> {
-    try {
+  ): Promise<{ result: User }>
+  {
+    try
+    {
       let newPass: string | null;
-      if (data.password) {
+      if (data.password)
+      {
         newPass = await bcrypt.hash(data.password, 10);
       }
       delete data.password;
@@ -105,15 +122,18 @@ export class ProfileService {
         ...data,
         ...(newPass && { password: newPass }),
       });
-      if (data.role === Roles.SELLER) {
+      if (data.role === Roles.SELLER)
+      {
         await this.notificationsRepository.create({
           type: NotificationType.UPGRAFE_ACCOUNT,
           userId: user.id,
           message: NotificationMessages.UPGRAFE_ACCOUNT,
+          link: `/my-profile-seller`,
         });
       }
       return { result };
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -121,23 +141,29 @@ export class ProfileService {
   public async updateAvatar(
     user: TUser,
     avatar: Express.Multer.File,
-  ): Promise<{ result: User }> {
-    try {
+  ): Promise<{ result: User }>
+  {
+    try
+    {
       const uploadedFile = await this.fileStorageService.uploadFile(avatar, BucketType.AVATAR, user.id, 'avatar', true);
       const result = await this.userRepository.update(user.id, {
         avatar: uploadedFile,
       });
       return { result };
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async deleteProfile(userId: number): Promise<void> {
-    try {
+  public async deleteProfile(userId: number): Promise<void>
+  {
+    try
+    {
       await this.userRepository.delete(userId);
       return;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -146,14 +172,18 @@ export class ProfileService {
     userId: number,
     oldPassword: string,
     password: string,
-  ): Promise<{ result: User }> {
-    try {
+  ): Promise<{ result: User }>
+  {
+    try
+    {
       const user = await this.userRepository.findOneById(userId);
-      if (!user) {
+      if (!user)
+      {
         throw new BadRequestException('No such user');
       }
       const match = await bcrypt.compare(oldPassword, user.password);
-      if (!match) {
+      if (!match)
+      {
         throw new BadRequestException('Invalid password');
       }
 
@@ -163,7 +193,8 @@ export class ProfileService {
       });
 
       return { result };
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
