@@ -168,6 +168,7 @@ export class NotificationsRepository
       case NotificationType.MUSIC_MAX_PUBLISHED:
         return userSettings.subscriptions;
       case NotificationType.MUSIC_APPROVED:
+        return userSettings.musicApproved;
       case NotificationType.MUSIC_PUBLISHED:
       case NotificationType.MUSIC_DECLINED:
         return userSettings.system;

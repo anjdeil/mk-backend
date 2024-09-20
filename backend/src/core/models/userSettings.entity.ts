@@ -1,18 +1,20 @@
-import {
-  Column,
-  DataType,
-  Table,
-  BelongsTo,
-  Model,
-  ForeignKey,
-  PrimaryKey,
-} from 'sequelize-typescript';
+import
+  {
+    Column,
+    DataType,
+    Table,
+    BelongsTo,
+    Model,
+    ForeignKey,
+    PrimaryKey,
+  } from 'sequelize-typescript';
 
 import User from './user.entity';
 import { TSettings, TSettingsItem } from '../types/settings';
 
 @Table({ tableName: 'user-settings', freezeTableName: true, timestamps: false })
-export default class Settings extends Model<TSettings> {
+export default class Settings extends Model<TSettings>
+{
   @PrimaryKey
   @ForeignKey(() => User)
   @Column({
@@ -100,6 +102,16 @@ export default class Settings extends Model<TSettings> {
     },
   })
   system: TSettingsItem;
+
+  @Column({
+    type: DataType.JSON,
+    allowNull: false,
+    defaultValue: {
+      email: true,
+      push: true,
+    },
+  })
+  musicApproved: TSettingsItem;
 
   @Column({
     type: DataType.JSON,
