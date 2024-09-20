@@ -89,11 +89,10 @@ export class NotificationsController
     );
   }
 
-  // @UseGuards(IsAdminGuard)
+  @UseGuards(IsAdminGuard)
   @Post('admin')
   async createNotificationFromAdmin(@Body() body)
   {
-    console.log('test');
     return await this.notificationsService.createNotification(body);
   }
 }

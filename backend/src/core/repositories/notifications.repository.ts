@@ -29,6 +29,7 @@ export class NotificationsRepository
 
   public async create(data: TNotification): Promise<void>
   {
+    console.log('notification message:', data.message);
     try
     {
       const userSettings = await this.settingsRepository.findOneByUser(
