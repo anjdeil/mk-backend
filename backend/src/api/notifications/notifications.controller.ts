@@ -1,22 +1,22 @@
 import
-  {
-    Body,
-    Controller,
-    Get,
-    Post,
-    Put,
-    Req,
-    UseGuards,
-  } from '@nestjs/common';
+{
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import
-  {
-    ApiBearerAuth,
-    ApiBody,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
-  } from '@nestjs/swagger';
+{
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { NotificationsService } from './notifications.service';
 import { IsAdminGuard } from '../../core/guards';
@@ -89,7 +89,7 @@ export class NotificationsController
     );
   }
 
-  @UseGuards(IsAdminGuard)
+  // @UseGuards(IsAdminGuard)
   @Post('admin')
   async createNotificationFromAdmin(@Body() body)
   {
