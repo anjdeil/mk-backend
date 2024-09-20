@@ -111,16 +111,6 @@ export default class Settings extends Model<TSettings>
       push: true,
     },
   })
-  musicApproved: TSettingsItem;
-
-  @Column({
-    type: DataType.JSON,
-    allowNull: false,
-    defaultValue: {
-      email: true,
-      push: true,
-    },
-  })
   follows: TSettingsItem;
 
   @BelongsTo(() => User, 'userId')

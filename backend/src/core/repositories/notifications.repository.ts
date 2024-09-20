@@ -29,7 +29,6 @@ export class NotificationsRepository
 
   public async create(data: TNotification): Promise<void>
   {
-    console.log('notification message:', data.message);
     try
     {
       const userSettings = await this.settingsRepository.findOneByUser(
@@ -167,8 +166,6 @@ export class NotificationsRepository
       case NotificationType.UPGRAFE_ACCOUNT_PRO:
       case NotificationType.MUSIC_MAX_PUBLISHED:
         return userSettings.subscriptions;
-      case NotificationType.MUSIC_APPROVED:
-        return userSettings.musicApproved;
       case NotificationType.MUSIC_PUBLISHED:
       case NotificationType.MUSIC_DECLINED:
         return userSettings.system;
