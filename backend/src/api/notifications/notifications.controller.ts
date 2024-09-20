@@ -93,6 +93,7 @@ export class NotificationsController
   @Post('admin')
   async createNotificationFromAdmin(@Body() body)
   {
+    console.log('test');
     return await this.notificationsService.createNotification(body);
   }
 }
