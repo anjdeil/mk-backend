@@ -274,6 +274,7 @@ export class MusicsService
 
     if (user.role == Roles.ADMIN || user.role == Roles.MODERATOR)
     {
+      console.log('test222', data);
       if (data.status && data.status === MusicStatus.APPROVED)
       {
         await this.notificationsRepository.create({
