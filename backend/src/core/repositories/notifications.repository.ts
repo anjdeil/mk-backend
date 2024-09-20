@@ -167,6 +167,7 @@ export class NotificationsRepository
       case NotificationType.UPGRAFE_ACCOUNT_PRO:
       case NotificationType.MUSIC_MAX_PUBLISHED:
         return userSettings.subscriptions;
+      case NotificationType.MUSIC_APPROVED:
       case NotificationType.MUSIC_PUBLISHED:
       case NotificationType.MUSIC_DECLINED:
         return userSettings.system;

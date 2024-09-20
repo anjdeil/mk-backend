@@ -1,6 +1,8 @@
 import { NotificationType } from '../enums/notifications';
 
 export const NotificationMessages = {
+  [NotificationType.MUSIC_APPROVED]: (title: string) =>
+    `Your track "${title}" has been approved.`,
   [NotificationType.MUSIC_PUBLISHED]: (title: string) =>
     `Your track "${title}" has been published.`,
   [NotificationType.MUSIC_DECLINED]: (title: string) =>

@@ -44,6 +44,7 @@ export default class Notifications extends Model<TNotification>
   @Column({
     type: DataType.ENUM(
       NotificationType.MUSIC_PUBLISHED,
+      NotificationType.MUSIC_APPROVED,
       NotificationType.MUSIC_DECLINED,
       NotificationType.MUSIC_BOUGHT,
       NotificationType.MUSIC_FAVORITES,
