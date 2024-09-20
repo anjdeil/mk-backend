@@ -272,11 +272,8 @@ export class MusicsService
       }
     }
 
-    console.log('just update', user.role);
-    console.log('just another update', data.status);
     if (user.role == Roles.ADMIN || user.role == Roles.MODERATOR)
     {
-      console.log('Something, something, something, Dark Side', data.status);
       if (data.status && data.status === MusicStatus.APPROVED)
       {
         await this.notificationsRepository.create({
