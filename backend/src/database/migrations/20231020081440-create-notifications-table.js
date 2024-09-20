@@ -1,7 +1,8 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface, Sequelize) =>
+  {
     return queryInterface.createTable('notifications', {
       id: {
         type: Sequelize.INTEGER,
@@ -15,6 +16,7 @@ module.exports = {
       },
       type: {
         type: Sequelize.ENUM(
+          'MUSIC_APPROVED',
           'MUSIC_PUBLISHED',
           'PUBLISH_TRACK',
           'MUSIC_BOUGHT',
@@ -56,7 +58,8 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface, Sequelize) =>
+  {
     return queryInterface.dropTable('notifications');
   },
 };
