@@ -168,6 +168,7 @@ export class NotificationsRepository
         return userSettings.subscriptions;
       case NotificationType.MUSIC_PUBLISHED:
       case NotificationType.MUSIC_DECLINED:
+      case NotificationType.MUSIC_APPROVED:
         return userSettings.system;
       case NotificationType.FOLLOWING_USER_ACTION:
       case NotificationType.NEW_FOLLOWER:
