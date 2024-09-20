@@ -1,9 +1,9 @@
 import
-  {
-    Inject,
-    Injectable,
-    InternalServerErrorException,
-  } from '@nestjs/common';
+{
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 
 import { SettingsRepository } from './userSettings.repository';
 import { EmailService } from '../../shared/services';
@@ -29,6 +29,7 @@ export class NotificationsRepository
 
   public async create(data: TNotification): Promise<void>
   {
+    console.log('sssss', data);
     try
     {
       const userSettings = await this.settingsRepository.findOneByUser(
