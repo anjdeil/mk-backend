@@ -34,9 +34,12 @@ export class NotificationsRepository
       const userSettings = await this.settingsRepository.findOneByUser(
         data.userId,
       );
+
+      console.log('createData', data);
       const { id } = await this.notificationsRepository.create<Notifications>(
         data,
       );
+
       const notification = await this.findOneById(id);
       const { email, push } = this.checkIfSettingsAllowNotification(
         userSettings,
