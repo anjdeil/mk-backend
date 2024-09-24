@@ -1,4 +1,5 @@
-import {
+import
+{
   BadRequestException,
   Injectable,
   InternalServerErrorException,
@@ -7,7 +8,8 @@ import Stripe from 'stripe';
 
 import { PaymentType, TransactionType } from '../../core/enums';
 import { Sales } from '../../core/models';
-import {
+import
+{
   CartRepository,
   InnerTransactionsRepository,
   MusicsFilesRepository,
@@ -17,7 +19,8 @@ import {
 import { TCart, TClientSecret, TUser } from '../../core/types';
 
 @Injectable()
-export class CartService {
+export class CartService
+{
   private readonly stripe: Stripe;
 
   constructor(
@@ -26,30 +29,38 @@ export class CartService {
     private readonly salesRepository: SalesRepository,
     private readonly transactionsRepository: TransactionsRepository,
     private readonly innerTransactionsRepository: InnerTransactionsRepository,
-  ) {
+  )
+  {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-08-16',
     });
   }
 
-  async getUserCart(userId: number): Promise<TCart[]> {
-    try {
+  async getUserCart(userId: number): Promise<TCart[]>
+  {
+    try
+    {
       const cart = await this.cartRepository.findAll(userId);
       return cart;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async addToCart(userId: number, fileId: number): Promise<void> {
-    try {
+  async addToCart(userId: number, fileId: number): Promise<void>
+  {
+    try
+    {
       const file = await this.musicFilesRepository.findOne(fileId);
 
-      if (!file) {
+      if (!file)
+      {
         throw new BadRequestException('File not found');
       }
 
-      if (file.userId === userId) {
+      if (file.userId === userId)
+      {
         throw new BadRequestException('You cannot add your own file to cart');
       }
 
@@ -57,29 +68,37 @@ export class CartService {
         where: { userId, fileId },
       });
 
-      if (cartItem) {
+      if (cartItem)
+      {
         throw new BadRequestException('File already in cart');
       }
       this.cartRepository.create({ userId, fileId });
 
       return;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async deleteFromCart(fileId: number, userId: number): Promise<number> {
-    try {
+  async deleteFromCart(fileId: number, userId: number): Promise<number>
+  {
+    try
+    {
       return this.cartRepository.delete(fileId, userId);
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async deleteAllFromCart(userId: number): Promise<number> {
-    try {
+  async deleteAllFromCart(userId: number): Promise<number>
+  {
+    try
+    {
       return this.cartRepository.deleteAll(userId);
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -88,24 +107,30 @@ export class CartService {
     user: TUser,
     paymentType: PaymentType = PaymentType.STRIPE,
     paymentMethodId: string,
-  ): Promise<TClientSecret | { sales: Sales[] }> {
+  ): Promise<TClientSecret | { sales: Sales[] }>
+  {
     const cart = await this.cartRepository.findAll(user.id);
 
-    if (!cart.length) {
+    if (!cart.length)
+    {
       throw new BadRequestException('Cart is empty');
     }
     const amount = cart.reduce((acc, item) => acc + item.musicFile.cost, 0);
 
-    if (paymentType === PaymentType.WALLET) {
-      if (user.balance < amount) {
+    if (paymentType === PaymentType.WALLET)
+    {
+      if (user.balance < amount)
+      {
         throw new BadRequestException('Not enough money');
       }
+
       const transactionsData = cart.map((item) => ({
         senderId: user.id,
         recipientId: item.musicFile.userId,
         amount: item.musicFile.cost,
         type: TransactionType.SALE,
       }));
+
       const transactions = await this.transactionsRepository.bulkCreate(
         transactionsData,
       );
@@ -115,6 +140,7 @@ export class CartService {
         fileId: transaction.fileId,
         userId: transaction.recipientId,
       }));
+
       const sales = await this.salesRepository.bulkCreate(salesData);
 
       await this.innerTransactionsRepository.bulkCreate(
@@ -126,7 +152,8 @@ export class CartService {
       );
 
       return { sales };
-    } else {
+    } else
+    {
       const paymentIntent = await this.stripe.paymentIntents.create({
         amount,
         currency: 'usd',
@@ -148,7 +175,8 @@ export class CartService {
     fileIds: number[];
     user: { name: string; email: string };
     paymentMethodId: string;
-  }): Promise<any> {
+  }): Promise<any>
+  {
     const customer = await this.stripe.customers.create({
       name: data.user.name,
       email: data.user.email,
