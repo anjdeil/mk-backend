@@ -7,6 +7,8 @@ export const NotificationMessages = {
     `Your track "${title}" has been published.`,
   [NotificationType.MUSIC_DECLINED]: (title: string) =>
     `Uploading "${title}" is declined. `,
+  [NotificationType.MUSIC_BLOCKED]: (title: string) =>
+    `Your track "${title}" has been blocked.`,
   [NotificationType.MUSIC_BOUGHT]: (title: string, name: string) =>
     `${name} bought "${title} `,
   [NotificationType.MUSIC_FAVORITES]: (title: string, name: string) =>

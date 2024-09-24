@@ -11,6 +11,18 @@ module.exports = {
       );
 
       await queryInterface.sequelize.query(
+        `ALTER TYPE "enum_notifications_type" ADD VALUE 'MUSIC_DECLINED';`,
+        { transaction },
+      );
+
+      await queryInterface.sequelize.query(
+        `ALTER TYPE "enum_notifications_type" ADD VALUE 'MUSIC_BLOCKED';`,
+        { transaction },
+      );
+
+
+
+      await queryInterface.sequelize.query(
         `ALTER TYPE "enum_notifications_type" ADD VALUE 'NEW_PLAYLISTS_FOLLOWER';`,
         { transaction },
       );

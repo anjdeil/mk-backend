@@ -46,6 +46,7 @@ export default class Notifications extends Model<TNotification>
       NotificationType.MUSIC_PUBLISHED,
       NotificationType.MUSIC_APPROVED,
       NotificationType.MUSIC_DECLINED,
+      NotificationType.MUSIC_BLOCKED,
       NotificationType.MUSIC_BOUGHT,
       NotificationType.MUSIC_FAVORITES,
       NotificationType.MUSIC_MAX_PUBLISHED,
