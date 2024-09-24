@@ -1,21 +1,23 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import
+  {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Query,
+    Req,
+    UseGuards,
+  } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import
+  {
+    ApiBearerAuth,
+    ApiOperation,
+    ApiResponse,
+    ApiTags,
+  } from '@nestjs/swagger';
 
 import { CartService } from './cart.service';
 import { CartDto, UnauthorizedFlowDto } from '../../core/dto';
@@ -25,8 +27,9 @@ import { AuthRequest } from '../../core/types/common';
 
 @ApiTags('cart')
 @Controller('cart')
-export class CartController {
-  constructor(private readonly cartService: CartService) {}
+export class CartController
+{
+  constructor(private readonly cartService: CartService) { }
 
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get cart' })
@@ -40,7 +43,8 @@ export class CartController {
   })
   @UseGuards(AuthGuard('jwt'))
   @Get()
-  async getUserCart(@Req() req: AuthRequest) {
+  async getUserCart(@Req() req: AuthRequest)
+  {
     return this.cartService.getUserCart(req.user.id);
   }
 
@@ -52,7 +56,8 @@ export class CartController {
   })
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  async addToCart(@Req() req: AuthRequest, @Body() data: CartDto) {
+  async addToCart(@Req() req: AuthRequest, @Body() data: CartDto)
+  {
     return this.cartService.addToCart(req.user.id, data.fileId);
   }
 
@@ -67,7 +72,8 @@ export class CartController {
   async deleteFromCart(
     @Req() req: AuthRequest,
     @Param('fileId') fileId: number,
-  ) {
+  )
+  {
     return this.cartService.deleteFromCart(fileId, req.user.id);
   }
 
@@ -79,7 +85,8 @@ export class CartController {
   })
   @UseGuards(AuthGuard('jwt'))
   @Delete()
-  async deleteAllFromCart(@Req() req: AuthRequest) {
+  async deleteAllFromCart(@Req() req: AuthRequest)
+  {
     return this.cartService.deleteAllFromCart(req.user.id);
   }
 
@@ -89,13 +96,15 @@ export class CartController {
     status: 200,
     description: 'Checkout',
   })
+
   @UseGuards(AuthGuard('jwt'))
   @Post('checkout')
   async checkout(
     @Req() req: AuthRequest,
     @Query('paymentType') paymentType: PaymentType,
     @Query('paymentMethodId') paymentMethodId: string,
-  ) {
+  )
+  {
     return this.cartService.checkout(req.user, paymentType, paymentMethodId);
   }
 
@@ -106,7 +115,8 @@ export class CartController {
     description: 'Checkout',
   })
   @Post('unauthorised-checkout')
-  async unauthorisedCheckout(@Body() data: UnauthorizedFlowDto) {
+  async unauthorisedCheckout(@Body() data: UnauthorizedFlowDto)
+  {
     return this.cartService.unauthorizedCheckout(data);
   }
 }

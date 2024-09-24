@@ -110,6 +110,7 @@ export class CartService
   ): Promise<TClientSecret | { sales: Sales[] }>
   {
     const cart = await this.cartRepository.findAll(user.id);
+    console.log('Checkout data test:', user);
 
     if (!cart.length)
     {

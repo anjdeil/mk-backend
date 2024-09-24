@@ -1,9 +1,9 @@
 import
-  {
-    Inject,
-    Injectable,
-    InternalServerErrorException,
-  } from '@nestjs/common';
+{
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { FindOptions, Op } from 'sequelize';
 
 import { TRANSACTION_REPOSITORY } from '../constants';
@@ -47,7 +47,6 @@ export class TransactionsRepository
   {
     try
     {
-      console.log('Checkout data test:', data);
       return await this.transactionRepository.bulkCreate<Transactions>(data);
     } catch (error)
     {
