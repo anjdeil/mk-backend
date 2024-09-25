@@ -109,6 +109,7 @@ export class CartService
     paymentMethodId: string,
   ): Promise<TClientSecret | { sales: Sales[] }>
   {
+    console.log('The first one', user);
     const cart = await this.cartRepository.findAll(user.id);
     if (!cart.length)
     {
