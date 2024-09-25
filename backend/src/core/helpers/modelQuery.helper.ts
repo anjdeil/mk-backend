@@ -10,14 +10,34 @@ export const processFilters = <TFilters>(filters: TFilters) =>
   const processedFilters = {};
   Object.keys(filters).forEach((key) =>
   {
+    const value = filters[key];
+
+    if (value == null) return;
+
     if (typeof filters[key] === 'string' && filters[key].length > 0)
     {
       processedFilters[key] = filters[key];
     }
+
     if (typeof filters[key] === 'number')
     {
       processedFilters[key] = filters[key];
     }
+
+    if (typeof value === 'object' && !isEmpty(value))
+    {
+      ['lte', 'gte', 'lt', 'gt', 'ne', 'eq', 'like', 'nlike'].forEach(op =>
+      {
+        if (value[op] != null)
+        {
+          processedFilters[key] = {
+            ...processedFilters[key],
+            [Op[op]]: value[op],
+          };
+        }
+      });
+    }
+
     if (typeof filters[key] === 'object' && !isEmpty(filters[key]))
     {
       // less than or equal
@@ -104,8 +124,6 @@ export const processFilters = <TFilters>(filters: TFilters) =>
 export const processCommonQuery = (query: ModelQuery): FindOptions =>
 {
   const { limit, offset, order, search, filters } = query;
-  console.log('check Query offset value:', offset);
-  console.log('check Query limit value:', limit);
   const where = {
     ...(search &&
       search.value &&
