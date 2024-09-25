@@ -10,49 +10,14 @@ export const processFilters = <TFilters>(filters: TFilters) =>
   const processedFilters = {};
   Object.keys(filters).forEach((key) =>
   {
-    const value = filters[key];
-
-    if (value == null || (typeof value === 'string' && value.trim().length === 0)) return;
-
     if (typeof filters[key] === 'string' && filters[key].length > 0)
     {
       processedFilters[key] = filters[key];
     }
-
     if (typeof filters[key] === 'number')
     {
       processedFilters[key] = filters[key];
     }
-
-    if (typeof value === 'object' && !isEmpty(value))
-    {
-      ['lte', 'gte', 'lt', 'gt', 'ne', 'eq', 'like', 'nlike'].forEach(op =>
-      {
-        if (value[op] != null)
-        {
-          processedFilters[key] = {
-            ...processedFilters[key],
-            [Op[op]]: value[op],
-          };
-        }
-      });
-    }
-
-    if (typeof value === 'object')
-    {
-      const ops = ['lte', 'gte', 'lt', 'gt', 'ne', 'eq', 'like', 'nlike'];
-      ops.forEach(op =>
-      {
-        if (value[op] != null)
-        {
-          processedFilters[key] = {
-            ...processedFilters[key],
-            [Op[op]]: value[op],
-          };
-        }
-      });
-    }
-
     if (typeof filters[key] === 'object' && !isEmpty(filters[key]))
     {
       // less than or equal
@@ -152,9 +117,11 @@ export const processCommonQuery = (query: ModelQuery): FindOptions =>
   };
 
   const options = {
-    ...(limit && !isNaN(+limit) && { limit: +limit }),
-    ...(offset && !isNaN(+offset) && { offset: +offset }),
-    ...(order && order.direction && order.field && {
+    ...(limit && { limit: +limit }),
+    ...(offset && { offset: +offset }),
+    ...(order &&
+      order.direction &&
+      order.field && {
       order: [[order.field, order.direction]],
     }),
   };
@@ -215,11 +182,12 @@ export const processCommonQueryWithRelationsAndFilters = <TFilters>(
         }),
     ...(filters && filters),
   };
-
   const options = {
-    ...(limit && !isNaN(+limit) && { limit: +limit }),
-    ...(offset && !isNaN(+offset) && { offset: +offset }),
-    ...(order && order.field && order.direction && {
+    ...(limit && { limit: +limit }),
+    ...(offset && { offset: +offset }),
+    ...(order &&
+      order.field &&
+      order.direction && {
       order: [[order.field, order.direction]],
     }),
     include: relations,
@@ -243,11 +211,12 @@ export const processCommonQueryWithoutSearch = <TFilters>(
   const proccessedFilters = {
     ...(filters && filters),
   };
-
   const options = {
-    ...(limit && !isNaN(+limit) && { limit: +limit }),
-    ...(offset && !isNaN(+offset) && { offset: +offset }),
-    ...(order && order.field && order.direction && {
+    ...(limit && { limit: +limit }),
+    ...(offset && { offset: +offset }),
+    ...(order &&
+      order.field &&
+      order.direction && {
       order: [[order.field, order.direction]],
     }),
     include: relations,
