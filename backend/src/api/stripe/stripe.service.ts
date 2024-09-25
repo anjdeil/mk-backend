@@ -183,6 +183,7 @@ export class StripeService
 
       if (paymentConfirmation.status === 'succeeded')
       {
+        console.log('paymentConfirmation.metadata :>> ', paymentConfirmation.metadata);
         const userId = +paymentConfirmation.metadata.userId;
         await this.musicsRepository.unblockMusicsByUserId(userId);
         const cart = await this.cartRepository.findAll(userId);

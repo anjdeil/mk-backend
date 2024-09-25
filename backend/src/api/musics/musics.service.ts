@@ -199,6 +199,7 @@ export class MusicsService
       userId: user.id,
       musicId: music.id,
     });
+
     await this.musicsRepository.createFiles({
       mp3: files.mp3[0],
       wav: files.wav ?? [],
@@ -217,6 +218,7 @@ export class MusicsService
       userId: user.id,
       musicId: music.id,
     });
+
     if (publishedMusic.length === 1)
     {
       await this.notificationsRepository.create({
@@ -226,6 +228,7 @@ export class MusicsService
         link: `/buy-subscription`,
       });
     }
+
     return await this.musicsRepository.findOneById(music.id);
   }
 
@@ -409,10 +412,6 @@ export class MusicsService
   {
     try
     {
-      console.log('sales repository', {
-        fileId,
-        user
-      });
       const sale = await this.salesRepository.findOne(fileId, user.id);
       if (!sale)
       {
