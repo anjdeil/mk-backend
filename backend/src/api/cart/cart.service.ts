@@ -123,6 +123,7 @@ export class CartService
     {
       if (user.balance < amount)
       {
+        console.log('Third error???', user.balance, amount);
         throw new BadRequestException('Not enough money');
       }
 
