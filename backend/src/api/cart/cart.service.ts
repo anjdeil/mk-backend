@@ -117,6 +117,7 @@ export class CartService
       throw new BadRequestException('Cart is empty');
     }
     const amount = cart.reduce((acc, item) => acc + item.musicFile.cost, 0);
+    console.log('Third', amount);
 
     if (paymentType === PaymentType.WALLET)
     {
@@ -125,6 +126,7 @@ export class CartService
         throw new BadRequestException('Not enough money');
       }
 
+      console.log('Fourth', cart);
       const transactionsData = cart.map((item) => ({
         senderId: user.id,
         recipientId: item.musicFile.userId,
