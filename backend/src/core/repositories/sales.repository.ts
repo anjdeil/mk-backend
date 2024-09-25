@@ -32,11 +32,9 @@ export class SalesRepository
   {
     try
     {
-      console.log('Try to create sales', data);
       return await this.salesRepository.bulkCreate<Sales>(data);
     } catch (error)
     {
-      console.log('Try to create sales error', data);
       throw new InternalServerErrorException(error.message);
     }
   }

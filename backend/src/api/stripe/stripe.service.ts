@@ -217,6 +217,7 @@ export class StripeService
   {
     try
     {
+      console.log('event.type :>> ', event.type);
       switch (event.type)
       {
         case 'customer.subscription.updated': {
