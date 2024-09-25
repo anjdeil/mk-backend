@@ -168,6 +168,17 @@ export class CartService
         },
       });
 
+      console.log('If bulkCreate second', {
+        amount,
+        currency: 'usd',
+        customer: user.stripeId,
+        payment_method: paymentMethodId,
+        metadata: {
+          userId: user.id,
+          fileIds: JSON.stringify(cart.map((item) => item.musicFile.id)),
+        },
+      });
+
       const paymentIntent = await this.stripe.paymentIntents.create({
         amount,
         currency: 'usd',
@@ -178,6 +189,7 @@ export class CartService
           fileIds: JSON.stringify(cart.map((item) => item.musicFile.id)),
         },
       });
+
       return {
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
