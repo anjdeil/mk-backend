@@ -217,7 +217,6 @@ export class StripeService
   {
     try
     {
-      console.log('event.type :>> ', event.type);
       switch (event.type)
       {
         case 'customer.subscription.updated': {
@@ -280,10 +279,6 @@ export class StripeService
               if (data.metadata.user)
               {
                 isUnAuthFlow = true;
-                console.log(
-                  'JSON.parse(data.metadata.user) :>> ',
-                  JSON.parse(data.metadata.user),
-                );
                 user = await this.authService.createWithoutPassword({
                   ...JSON.parse(data.metadata.user),
                   stripeId: data.metadata.customerId,

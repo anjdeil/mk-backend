@@ -109,25 +109,20 @@ export class CartService
     paymentMethodId: string,
   ): Promise<TClientSecret | { sales: Sales[] }>
   {
-    console.log('The first one', user);
     const cart = await this.cartRepository.findAll(user.id);
-    console.log('The second one', cart);
     if (!cart.length)
     {
       throw new BadRequestException('Cart is empty');
     }
     const amount = cart.reduce((acc, item) => acc + item.musicFile.cost, 0);
-    console.log('Third', amount);
 
     if (paymentType === PaymentType.WALLET)
     {
       if (user.balance < amount)
       {
-        console.log('Third error???', user.balance, amount);
         throw new BadRequestException('Not enough money');
       }
 
-      console.log('Fourth', cart);
       const transactionsData = cart.map((item) => ({
         senderId: user.id,
         recipientId: item.musicFile.userId,
@@ -135,7 +130,6 @@ export class CartService
         type: TransactionType.SALE,
       }));
 
-      console.log('Before create transactions', transactionsData);
       const transactions = await this.transactionsRepository.bulkCreate(
         transactionsData,
       );
@@ -146,7 +140,6 @@ export class CartService
         userId: transaction.recipientId,
       }));
 
-      console.log('Before create bulk', salesData);
       const sales = await this.salesRepository.bulkCreate(salesData);
 
       await this.innerTransactionsRepository.bulkCreate(
