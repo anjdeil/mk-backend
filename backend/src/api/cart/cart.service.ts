@@ -111,6 +111,7 @@ export class CartService
   {
     console.log('The first one', user);
     const cart = await this.cartRepository.findAll(user.id);
+    console.log('The second one', cart);
     if (!cart.length)
     {
       throw new BadRequestException('Cart is empty');
