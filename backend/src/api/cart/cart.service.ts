@@ -130,6 +130,7 @@ export class CartService
         type: TransactionType.SALE,
       }));
 
+      console.log('Before create transactions', transactionsData);
       const transactions = await this.transactionsRepository.bulkCreate(
         transactionsData,
       );
@@ -140,6 +141,7 @@ export class CartService
         userId: transaction.recipientId,
       }));
 
+      console.log('Before create bulk', salesData);
       const sales = await this.salesRepository.bulkCreate(salesData);
 
       await this.innerTransactionsRepository.bulkCreate(
