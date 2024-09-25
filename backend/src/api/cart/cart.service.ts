@@ -130,7 +130,6 @@ export class CartService
         type: TransactionType.SALE,
       }));
 
-      console.log('The first bulkCreate inside', transactionsData);
       const transactions = await this.transactionsRepository.bulkCreate(
         transactionsData,
       );
@@ -141,10 +140,8 @@ export class CartService
         userId: transaction.recipientId,
       }));
 
-      console.log('The second bulkCreate inside', salesData);
       const sales = await this.salesRepository.bulkCreate(salesData);
 
-      console.log('The third bulkCreate inside', transactions);
       await this.innerTransactionsRepository.bulkCreate(
         transactions.map((item) => ({
           parentTransactionId: item.id,
@@ -153,32 +150,9 @@ export class CartService
         })),
       );
 
-      console.log('Before return', sales);
       return { sales };
     } else
     {
-      console.log('If bulkCreate', {
-        amount,
-        currency: 'usd',
-        customer: user.stripeId,
-        payment_method: paymentMethodId,
-        metadata: {
-          userId: user.id,
-          fileIds: JSON.stringify(cart.map((item) => item.musicFile.id)),
-        },
-      });
-
-      console.log('If bulkCreate second', {
-        amount,
-        currency: 'usd',
-        customer: user.stripeId,
-        payment_method: paymentMethodId,
-        metadata: {
-          userId: user.id,
-          fileIds: JSON.stringify(cart.map((item) => item.musicFile.id)),
-        },
-      });
-
       const paymentIntent = await this.stripe.paymentIntents.create({
         amount,
         currency: 'usd',

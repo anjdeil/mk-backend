@@ -409,6 +409,10 @@ export class MusicsService
   {
     try
     {
+      console.log('sales repository', {
+        fileId,
+        user
+      });
       const sale = await this.salesRepository.findOne(fileId, user.id);
       if (!sale)
       {
