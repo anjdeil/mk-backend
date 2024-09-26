@@ -107,13 +107,14 @@ export class CommentsController
     description: 'The comments has been successfully retrieved.',
   })
   @ApiOperation({ summary: 'Get comments by track' })
+  @UseGuards(AuthGuard('jwt'))
   @Get('track/:id')
   public async getCommentsByTrack(
     @Param('id') id: number,
-    @Req() req: AuthRequest,
+    @Req() req: Request,
   )
   {
-    console.log('req user comments:>> ', req);
+    console.log('req user comments:>> ', req.user);
     return await this.commentsService.getCommentsByTrack(id);
   }
 
