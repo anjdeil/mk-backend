@@ -39,18 +39,18 @@ function checkCanComment(userId: string):
   }
 {
   const now = new Date();
-  const lastCommentTime = userCommentMap.get(userId);
+  const nextCommentTime = userCommentMap.get(userId);
 
-  if (
-    lastCommentTime &&
-    now.getTime() - lastCommentTime.getTime() < 2 * 60 * 1000
-  )
+  // Check if the user can comment or needs to wait
+  if (nextCommentTime && now.getTime() < nextCommentTime.getTime())
   {
-    const nextCommentTime = new Date(lastCommentTime.getTime() + 2 * 60 * 1000);
     return { canComment: false, nextCommentTime };
   }
 
-  userCommentMap.set(userId, now);
+  // If the user can comment, update their nextCommentTime
+  const newNextCommentTime = new Date(now.getTime() + 2 * 60 * 1000);
+  userCommentMap.set(userId, newNextCommentTime);
+
   return { canComment: true };
 }
 
