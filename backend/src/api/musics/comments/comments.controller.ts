@@ -108,8 +108,12 @@ export class CommentsController
   })
   @ApiOperation({ summary: 'Get comments by track' })
   @Get('track/:id')
-  public async getCommentsByTrack(@Param('id') id: number)
+  public async getCommentsByTrack(
+    @Param('id') id: number,
+    @Req() req: AuthRequest,
+  )
   {
+    console.log('req :>> ', req.user);
     return await this.commentsService.getCommentsByTrack(id);
   }
 
