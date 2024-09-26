@@ -1,33 +1,33 @@
 import
-{
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+  {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Put,
+    Req,
+    UseGuards,
+  } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import
-{
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+  {
+    ApiBearerAuth,
+    ApiBody,
+    ApiOperation,
+    ApiParam,
+    ApiResponse,
+    ApiTags,
+  } from '@nestjs/swagger';
 
 import { CommentsService } from './comments.service';
 import
-{
-  commentSchema,
-  createCommentSchema,
-  updateCommentSchema,
-} from '../../../core/swagger.objects';
+  {
+    commentSchema,
+    createCommentSchema,
+    updateCommentSchema,
+  } from '../../../core/swagger.objects';
 import { AuthRequest } from '../../../core/types/common';
 
 const userCommentMap = new Map<string, Date>();
@@ -110,25 +110,24 @@ export class CommentsController
   @Get('track/:id')
   public async getCommentsByTrack(
     @Param('id') id: number,
-    @Request() req: Request)
+    @Req() req: AuthRequest,
   )
   {
-  const user = req.user;
-  console.log('req user :>> ', user);
-  return await this.commentsService.getCommentsByTrack(id);
-}
+    console.log('req :>> ', req.user);
+    return await this.commentsService.getCommentsByTrack(id);
+  }
 
-@ApiParam({ name: 'id', type: Number })
-@ApiBearerAuth()
-@ApiResponse({
-  status: 200,
-  description: 'The comment has been successfully deleted.',
-})
-@ApiOperation({ summary: 'Delete a comment' })
-@Delete(':id')
-@UseGuards(AuthGuard('jwt'))
-public async deleteComment(@Param('id') id: number, @Req() req: AuthRequest)
-{
-  return await this.commentsService.deleteComment(id, req.user.id);
-}
+  @ApiParam({ name: 'id', type: Number })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'The comment has been successfully deleted.',
+  })
+  @ApiOperation({ summary: 'Delete a comment' })
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
+  public async deleteComment(@Param('id') id: number, @Req() req: AuthRequest)
+  {
+    return await this.commentsService.deleteComment(id, req.user.id);
+  }
 }
