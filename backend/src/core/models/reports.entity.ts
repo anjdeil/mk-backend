@@ -1,12 +1,12 @@
 import
-{
-  Table,
-  Model,
-  Column,
-  ForeignKey,
-  DataType,
-  BelongsTo,
-} from 'sequelize-typescript';
+  {
+    Table,
+    Model,
+    Column,
+    ForeignKey,
+    DataType,
+    BelongsTo,
+  } from 'sequelize-typescript';
 
 import Music from './music.entity';
 import User from './user.entity';
@@ -42,12 +42,6 @@ export default class Reports extends Model<TReport>
     type: DataType.INTEGER,
   })
   subjectid: number;
-
-  // @Column({
-  //   allowNull: true,
-  //   type: DataType.INTEGER,
-  // })
-  // subjectid: number;
 
   @ForeignKey(() => Music)
   @Column({

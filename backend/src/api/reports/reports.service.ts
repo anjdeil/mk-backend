@@ -31,7 +31,6 @@ export class ReportsService
       return await this.reportRepository.findAll(options);
     } catch (error)
     {
-      console.log('errorororoor:', error.message);
       throw new InternalServerErrorException(error.message);
     }
   }
