@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { ThrottlerModule } from '@nestjs/throttler';
 import * as dotenv from 'dotenv';
 
 import { ApiModule } from './api/api.module';
@@ -11,6 +12,10 @@ dotenv.config();
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      ttl: 120,
+      limit: 1,
+    }),
     JwtModule.register({
       secret: process.env.JWTKEY,
       signOptions: { expiresIn: process.env.TOKEN_EXPIRATION },
@@ -22,4 +27,4 @@ dotenv.config();
   controllers: [AppController],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
