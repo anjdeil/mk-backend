@@ -51,14 +51,12 @@ export class CommentsController
   public async createComment(@Body() data, @Req() req: AuthRequest)
   {
     const userId = String(req.user.id);
-    // const { canComment, nextCommentTime } = checkCanComment(userId);
     const { canComment, nextCommentTime } =
       this.commentsService.checkCanComment(userId, userCommentMap);
 
     if (!canComment)
     {
       return {
-        statusCode: 429,
         message: 'You can only post once every 2 minutes',
         nextCommentTime,
       };
@@ -114,8 +112,16 @@ export class CommentsController
     @Req() req: AuthRequest,
   )
   {
-    console.log('req user comments:>> ', req.user);
-    return await this.commentsService.getCommentsByTrack(id);
+    const userId = String(req.user.id);
+
+    const { canComment, nextCommentTime } =
+      this.commentsService.checkCanComment(userId, userCommentMap);
+    const comments = await this.commentsService.getCommentsByTrack(id);
+
+    return {
+      comments,
+      nextCommentTime,
+    };
   }
 
   @ApiParam({ name: 'id', type: Number })
