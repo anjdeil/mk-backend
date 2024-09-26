@@ -111,7 +111,7 @@ export class CommentsController
   @Get('track/:id')
   public async getCommentsByTrack(
     @Param('id') id: number,
-    @Req() req: Request,
+    @Req() req: AuthRequest,
   )
   {
     console.log('req user comments:>> ', req.user);
