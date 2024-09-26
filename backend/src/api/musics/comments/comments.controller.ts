@@ -113,7 +113,7 @@ export class CommentsController
     @Req() req: AuthRequest,
   )
   {
-    console.log('req :>> ', req);
+    console.log('req user comments:>> ', req);
     return await this.commentsService.getCommentsByTrack(id);
   }
 
