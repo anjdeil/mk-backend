@@ -5,11 +5,11 @@ import { NotificationMessages } from '../../../core/constants/notifications';
 import { NotificationType } from '../../../core/enums';
 import { MusicsComments } from '../../../core/models';
 import
-{
-  MusicsCommentsRepository,
-  MusicsRepository,
-  NotificationsRepository,
-} from '../../../core/repositories';
+  {
+    MusicsCommentsRepository,
+    MusicsRepository,
+    NotificationsRepository,
+  } from '../../../core/repositories';
 import { TUser } from '../../../core/types';
 
 @Injectable()
@@ -116,5 +116,28 @@ export class CommentsService
     {
       throw new InternalServerErrorException(error.message);
     }
+  }
+
+  public checkCanComment(
+    userId: string,
+    userCommentMap: Map<string, Date>,
+  ):
+      {
+        canComment: boolean;
+        nextCommentTime?: Date;
+      }
+  {
+    const now = new Date();
+    const nextCommentTime = userCommentMap.get(userId);
+
+    if (nextCommentTime && now.getTime() < nextCommentTime.getTime())
+    {
+      return { canComment: false, nextCommentTime };
+    }
+
+    const newNextCommentTime = new Date(now.getTime() + 2 * 60 * 1000);
+    userCommentMap.set(userId, newNextCommentTime);
+
+    return { canComment: true };
   }
 }

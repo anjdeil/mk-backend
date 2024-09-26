@@ -32,28 +32,6 @@ import { AuthRequest } from '../../../core/types/common';
 
 const userCommentMap = new Map<string, Date>();
 
-function checkCanComment(userId: string):
-  {
-    canComment: boolean;
-    nextCommentTime?: Date;
-  }
-{
-  const now = new Date();
-  const nextCommentTime = userCommentMap.get(userId);
-
-  // Check if the user can comment or needs to wait
-  if (nextCommentTime && now.getTime() < nextCommentTime.getTime())
-  {
-    return { canComment: false, nextCommentTime };
-  }
-
-  // If the user can comment, update their nextCommentTime
-  const newNextCommentTime = new Date(now.getTime() + 2 * 60 * 1000);
-  userCommentMap.set(userId, newNextCommentTime);
-
-  return { canComment: true };
-}
-
 @ApiTags('comments')
 @Controller('comments')
 export class CommentsController
@@ -73,7 +51,9 @@ export class CommentsController
   public async createComment(@Body() data, @Req() req: AuthRequest)
   {
     const userId = String(req.user.id);
-    const { canComment, nextCommentTime } = checkCanComment(userId);
+    // const { canComment, nextCommentTime } = checkCanComment(userId);
+    const { canComment, nextCommentTime } =
+      this.commentsService.checkCanComment(userId, userCommentMap);
 
     if (!canComment)
     {
