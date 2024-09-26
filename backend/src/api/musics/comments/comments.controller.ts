@@ -116,11 +116,12 @@ export class CommentsController
 
     const { canComment, nextCommentTime } =
       this.commentsService.checkCanComment(userId, userCommentMap);
-    const comments = await this.commentsService.getCommentsByTrack(id);
+
+    const { comments } = await this.commentsService.getCommentsByTrack(id);
 
     return {
-      comments,
-      nextCommentTime,
+      comments: comments,
+      nextCommentTime: nextCommentTime || null,
     };
   }
 
