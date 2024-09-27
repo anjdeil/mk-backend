@@ -1035,21 +1035,21 @@ export class MusicsRepository
       }
 
       const { count, rows } = await this.musicsRepository.findAndCountAll({
-        attributes: {
-          exclude: [
-            'listenCount',
-            'categoryIds',
-            'moodIds',
-            'typeIds',
-            'instrumentIds',
-            'keyIds',
-          ],
-        },
+        // attributes: {
+        //   exclude: [
+        //     'listenCount',
+        //     'categoryIds',
+        //     'moodIds',
+        //     'typeIds',
+        //     'instrumentIds',
+        //     'keyIds',
+        //   ],
+        // },
         order,
         where: { ...where, status: MusicStatus.PUBLISHED },
         distinct: true,
-        // limit: +options.limit,
-        // offset: +options.offset,
+        limit: +options.limit,
+        offset: +options.offset,
         include: includes,
       });
 
