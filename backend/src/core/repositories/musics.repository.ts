@@ -1074,7 +1074,7 @@ export class MusicsRepository
       //   sym.toString().includes('gte'),
       // );
 
-      let musics;
+      const musics = rows;
       // if (cost && cost[lte] !== 0)
       // {
       //   musics = rows.filter((track) =>
