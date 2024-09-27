@@ -1009,17 +1009,17 @@ export class MusicsRepository
         //   required: true,
         //   as: 'files',
         // },
-        // {
-        //   model: MusicsHistory,
-        //   ...(relevanceRange && {
-        //     where: {
-        //       createdAt: {
-        //         [Op.gte]: relevanceRange,
-        //       },
-        //     },
-        //   }),
-        //   required: true,
-        // },
+        {
+          model: MusicsHistory,
+          ...(relevanceRange && {
+            where: {
+              createdAt: {
+                [Op.gte]: relevanceRange,
+              },
+            },
+          }),
+          required: true,
+        },
         {
           model: User,
           attributes: ['id', 'name', 'avatar', 'pseudonym'],
