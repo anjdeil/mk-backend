@@ -840,6 +840,7 @@ export class MusicsRepository
         relevanceRange = getRelevanceTimeRange(relevance);
       }
 
+      console.log({ where });
       this.logger.debug('==== SEARCH OLD END ========');
 
       const { count, rows: musics } =
@@ -897,7 +898,7 @@ export class MusicsRepository
 
       this.logger.debug(options.filters);
 
-      if (false)
+      if (filters)
       {
         for (const [key, value] of Object.entries(filters))
         {
@@ -1034,16 +1035,16 @@ export class MusicsRepository
       }
 
       const { count, rows } = await this.musicsRepository.findAndCountAll({
-        // attributes: {
-        //   exclude: [
-        //     'listenCount',
-        //     'categoryIds',
-        //     'moodIds',
-        //     'typeIds',
-        //     'instrumentIds',
-        //     'keyIds',
-        //   ],
-        // },
+        attributes: {
+          exclude: [
+            'listenCount',
+            'categoryIds',
+            'moodIds',
+            'typeIds',
+            'instrumentIds',
+            'keyIds',
+          ],
+        },
         order,
         where: { ...where, status: MusicStatus.PUBLISHED },
         distinct: true,
@@ -1065,29 +1066,28 @@ export class MusicsRepository
 
       const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
+      const lte = Object.getOwnPropertySymbols(cost).find((sym) =>
+        sym.toString().includes('lte'),
+      );
+      const gte = Object.getOwnPropertySymbols(cost).find((sym) =>
+        sym.toString().includes('gte'),
+      );
 
-      // const lte = Object.getOwnPropertySymbols(cost).find((sym) =>
-      //   sym.toString().includes('lte'),
-      // );
-      // const gte = Object.getOwnPropertySymbols(cost).find((sym) =>
-      //   sym.toString().includes('gte'),
-      // );
-
-      const musics = rows;
-      // if (cost && cost[lte] !== 0)
-      // {
-      //   musics = rows.filter((track) =>
-      //     track.files.some(
-      //       (file) =>
-      //         file.type === 'mp3' &&
-      //         file.cost >= cost[gte] &&
-      //         file.cost <= cost[lte],
-      //     ),
-      //   );
-      // } else
-      // {
-      //   musics = rows;
-      // }
+      let musics;
+      if (cost && cost[lte] !== 0)
+      {
+        musics = rows.filter((track) =>
+          track.files.some(
+            (file) =>
+              file.type === 'mp3' &&
+              file.cost >= cost[gte] &&
+              file.cost <= cost[lte],
+          ),
+        );
+      } else
+      {
+        musics = rows;
+      }
       return { musics, count, maxPrice, minPrice };
     } catch (error)
     {
