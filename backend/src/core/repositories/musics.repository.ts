@@ -880,10 +880,10 @@ export class MusicsRepository
     try
     {
       const order = [];
-      const where: any = {
+      let where: any = {
         status: MusicStatus.PUBLISHED,
       };
-      const userWhere = {};
+      let userWhere = {};
       let relevanceRange: Date;
 
       if (options.order)
@@ -898,141 +898,141 @@ export class MusicsRepository
 
       this.logger.debug(options.filters);
 
-      // if (filters)
-      // {
-      //   for (const [key, value] of Object.entries(filters))
-      //   {
-      //     if (
-      //       ['categories', 'instruments', 'keys', 'moods', 'types'].includes(
-      //         key,
-      //       )
-      //     )
-      //       continue;
+      if (filters)
+      {
+        for (const [key, value] of Object.entries(filters))
+        {
+          if (
+            ['categories', 'instruments', 'keys', 'moods', 'types'].includes(
+              key,
+            )
+          )
+            continue;
 
-      //     if (musicOrderFields.includes(key))
-      //     {
-      //       where = {
-      //         ...where,
-      //         [key]: value,
-      //       };
-      //     } else
-      //     {
-      //       userWhere = {
-      //         ...userWhere,
-      //         [key]: value,
-      //       };
-      //     }
-      //   }
-      // }
-      // if (options.search)
-      // {
-      //   where = {
-      //     ...where,
-      //     [Op.or]: options.search.fields.map((item) =>
-      //     {
-      //       if (musicOrderFields.includes(item))
-      //       {
-      //         return {
-      //           [item]: { [Op.iLike]: `%${options.search.value}%` },
-      //         };
-      //       }
-      //     }),
-      //   };
-      // }
-      // if (plainFilters)
-      // {
-      //   const { categories, instruments, keys, moods, types } = plainFilters;
+          if (musicOrderFields.includes(key))
+          {
+            where = {
+              ...where,
+              [key]: value,
+            };
+          } else
+          {
+            userWhere = {
+              ...userWhere,
+              [key]: value,
+            };
+          }
+        }
+      }
+      if (options.search)
+      {
+        where = {
+          ...where,
+          [Op.or]: options.search.fields.map((item) =>
+          {
+            if (musicOrderFields.includes(item))
+            {
+              return {
+                [item]: { [Op.iLike]: `%${options.search.value}%` },
+              };
+            }
+          }),
+        };
+      }
+      if (plainFilters)
+      {
+        const { categories, instruments, keys, moods, types } = plainFilters;
 
-      //   const plainFilterMapping: { field: string; values: any | any[] }[] = [
-      //     {
-      //       field: 'categoryIds',
-      //       values: categories,
-      //     },
-      //     {
-      //       field: 'instrumentIds',
-      //       values: instruments,
-      //     },
-      //     { field: 'keyIds', values: keys },
-      //     { field: 'moodIds', values: moods },
-      //     { field: 'typeIds', values: types },
-      //   ];
-      //   const filterMapping: { field: string; values: number | number[] }[] =
-      //     [];
-      //   for (const filter of plainFilterMapping)
-      //   {
-      //     if (filter.values)
-      //     {
-      //       filterMapping.push({
-      //         field: filter.field,
-      //         values:
-      //           typeof filter.values === 'string'
-      //             ? [parseInt(filter.values, 10)]
-      //             : filter.values?.map((str) => parseInt(str, 10)),
-      //       });
-      //     }
-      //   }
+        const plainFilterMapping: { field: string; values: any | any[] }[] = [
+          {
+            field: 'categoryIds',
+            values: categories,
+          },
+          {
+            field: 'instrumentIds',
+            values: instruments,
+          },
+          { field: 'keyIds', values: keys },
+          { field: 'moodIds', values: moods },
+          { field: 'typeIds', values: types },
+        ];
+        const filterMapping: { field: string; values: number | number[] }[] =
+          [];
+        for (const filter of plainFilterMapping)
+        {
+          if (filter.values)
+          {
+            filterMapping.push({
+              field: filter.field,
+              values:
+                typeof filter.values === 'string'
+                  ? [parseInt(filter.values, 10)]
+                  : filter.values?.map((str) => parseInt(str, 10)),
+            });
+          }
+        }
 
-      //   const whereFilters = [];
+        const whereFilters = [];
 
-      //   for (const filter of filterMapping)
-      //   {
-      //     if (filter.values)
-      //     {
-      //       whereFilters[filter.field] = { [Op.contains]: filter.values };
-      //     }
-      //   }
-      //   if (whereFilters)
-      //   {
-      //     where = { ...where, ...whereFilters };
-      //   }
-      // }
+        for (const filter of filterMapping)
+        {
+          if (filter.values)
+          {
+            whereFilters[filter.field] = { [Op.contains]: filter.values };
+          }
+        }
+        if (whereFilters)
+        {
+          where = { ...where, ...whereFilters };
+        }
+      }
 
-      // const includes = [
-      //   {
-      //     model: Category,
-      //     attributes: ['id', 'name'],
-      //     through: {
-      //       attributes: [],
-      //     },
-      //     required: true,
-      //   },
-      //   {
-      //     model: MusicFiles,
-      //     attributes: ['id', 'cost', 'type'],
-      //     // ...(cost
-      //     //   ? {
-      //     //       where: {
-      //     //         cost,
-      //     //       },
-      //     //     }
-      //     //   : {}),
-      //     required: true,
-      //     as: 'files',
-      //   },
-      //   {
-      //     model: MusicsHistory,
-      //     ...(relevanceRange && {
-      //       where: {
-      //         createdAt: {
-      //           [Op.gte]: relevanceRange,
-      //         },
-      //       },
-      //     }),
-      //     required: true,
-      //   },
-      //   {
-      //     model: User,
-      //     attributes: ['id', 'name', 'avatar', 'pseudonym'],
-      //     as: 'artist',
-      //     where: userWhere,
-      //     required: true,
-      //   },
-      // ];
+      const includes = [
+        {
+          model: Category,
+          attributes: ['id', 'name'],
+          through: {
+            attributes: [],
+          },
+          required: true,
+        },
+        // {
+        //   model: MusicFiles,
+        //   attributes: ['id', 'cost', 'type'],
+        //   // ...(cost
+        //   //   ? {
+        //   //       where: {
+        //   //         cost,
+        //   //       },
+        //   //     }
+        //   //   : {}),
+        //   required: true,
+        //   as: 'files',
+        // },
+        // {
+        //   model: MusicsHistory,
+        //   ...(relevanceRange && {
+        //     where: {
+        //       createdAt: {
+        //         [Op.gte]: relevanceRange,
+        //       },
+        //     },
+        //   }),
+        //   required: true,
+        // },
+        {
+          model: User,
+          attributes: ['id', 'name', 'avatar', 'pseudonym'],
+          as: 'artist',
+          where: userWhere,
+          required: true,
+        },
+      ];
 
-      // if (relevance)
-      // {
-      //   relevanceRange = getRelevanceTimeRange(relevance);
-      // }
+      if (relevance)
+      {
+        relevanceRange = getRelevanceTimeRange(relevance);
+      }
 
       const { count, rows } = await this.musicsRepository.findAndCountAll({
         attributes: {
@@ -1050,7 +1050,7 @@ export class MusicsRepository
         distinct: true,
         limit: +options.limit,
         offset: +options.offset,
-        // include: includes,
+        include: includes,
       });
 
       const allPrices = rows.flatMap(
