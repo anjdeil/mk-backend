@@ -1048,7 +1048,7 @@ export class MusicsRepository
         order,
         where: { ...where, status: MusicStatus.PUBLISHED },
         distinct: true,
-        limit: +options.limit,
+        // limit: +options.limit,
         offset: +options.offset,
         include: includes,
       });
