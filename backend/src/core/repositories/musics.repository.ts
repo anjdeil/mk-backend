@@ -996,30 +996,30 @@ export class MusicsRepository
           },
           required: true,
         },
-        // {
-        //   model: MusicFiles,
-        //   attributes: ['id', 'cost', 'type'],
-        //   // ...(cost
-        //   //   ? {
-        //   //       where: {
-        //   //         cost,
-        //   //       },
-        //   //     }
-        //   //   : {}),
-        //   required: true,
-        //   as: 'files',
-        // },
         {
-          model: MusicsHistory,
-          ...(relevanceRange && {
-            where: {
-              createdAt: {
-                [Op.gte]: relevanceRange,
-              },
-            },
-          }),
+          model: MusicFiles,
+          attributes: ['id', 'cost', 'type'],
+          // ...(cost
+          //   ? {
+          //       where: {
+          //         cost,
+          //       },
+          //     }
+          //   : {}),
           required: true,
+          as: 'files',
         },
+        // {
+        //   model: MusicsHistory,
+        //   ...(relevanceRange && {
+        //     where: {
+        //       createdAt: {
+        //         [Op.gte]: relevanceRange,
+        //       },
+        //     },
+        //   }),
+        //   required: true,
+        // },
         {
           model: User,
           attributes: ['id', 'name', 'avatar', 'pseudonym'],
