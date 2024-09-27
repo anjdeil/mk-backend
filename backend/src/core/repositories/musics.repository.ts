@@ -1045,12 +1045,12 @@ export class MusicsRepository
             'keyIds',
           ],
         },
-        order,
-        where: { ...where, status: MusicStatus.PUBLISHED },
-        distinct: true,
-        limit: +options.limit,
-        offset: +options.offset,
-        include: includes,
+        // order,
+        // where: { ...where, status: MusicStatus.PUBLISHED },
+        // distinct: true,
+        // limit: +options.limit,
+        // offset: +options.offset,
+        // include: includes,
       });
 
       const allPrices = rows.flatMap(
