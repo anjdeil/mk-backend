@@ -1046,10 +1046,10 @@ export class MusicsRepository
           ],
         },
         order,
-        // where: { ...where, status: MusicStatus.PUBLISHED },
+        where: { ...where, status: MusicStatus.PUBLISHED },
         distinct: true,
-        limit: +options.limit,
-        offset: +options.offset,
+        // limit: +options.limit,
+        // offset: +options.offset,
         include: includes,
       });
 
