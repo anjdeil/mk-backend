@@ -840,7 +840,6 @@ export class MusicsRepository
         relevanceRange = getRelevanceTimeRange(relevance);
       }
 
-      console.log({ where });
       this.logger.debug('==== SEARCH OLD END ========');
 
       const { count, rows: musics } =
@@ -898,7 +897,7 @@ export class MusicsRepository
 
       this.logger.debug(options.filters);
 
-      if (filters)
+      if (false)
       {
         for (const [key, value] of Object.entries(filters))
         {
@@ -1048,7 +1047,7 @@ export class MusicsRepository
         order,
         where: { ...where, status: MusicStatus.PUBLISHED },
         distinct: true,
-        // limit: +options.limit,
+        limit: +options.limit,
         offset: +options.offset,
         include: includes,
       });
