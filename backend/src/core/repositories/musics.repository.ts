@@ -1,34 +1,34 @@
 import
-{
-  BadRequestException,
-  Inject,
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  LoggerService,
-} from '@nestjs/common';
+  {
+    BadRequestException,
+    Inject,
+    Injectable,
+    InternalServerErrorException,
+    Logger,
+    LoggerService,
+  } from '@nestjs/common';
 import { Lame } from 'node-lame';
 import { FindOptions, Op, Optional, Sequelize } from 'sequelize';
 import { NullishPropertiesOf } from 'sequelize/lib/utils';
 
 import { FileStorageService } from '../../shared/services';
 import
-{
-  MUSICS_REPOSITORY,
-  MUSIC_CATEGORIES_REPOSITORY,
-  MUSIC_FILES_REPOSITORY,
-  MUSIC_INSTRUMENTS_REPOSITORY,
-  MUSIC_KEYS_REPOSITORY,
-  MUSIC_MOODS_REPOSITORY,
-  MUSIC_TYPES_REPOSITORY,
-  SALES_REPOSITORY,
-} from '../constants';
+  {
+    MUSICS_REPOSITORY,
+    MUSIC_CATEGORIES_REPOSITORY,
+    MUSIC_FILES_REPOSITORY,
+    MUSIC_INSTRUMENTS_REPOSITORY,
+    MUSIC_KEYS_REPOSITORY,
+    MUSIC_MOODS_REPOSITORY,
+    MUSIC_TYPES_REPOSITORY,
+    SALES_REPOSITORY,
+  } from '../constants';
 import
-{
-  fullMusicGroupBy,
-  historyGroupBy,
-  musicGroupBy,
-} from '../constants/groupBy';
+  {
+    fullMusicGroupBy,
+    historyGroupBy,
+    musicGroupBy,
+  } from '../constants/groupBy';
 import { musicInclude } from '../constants/includes';
 import { musicOrderFields } from '../constants/search';
 import { BucketType, MusicExtension } from '../enums/files';
@@ -52,12 +52,12 @@ import TrackType from '../models/trackType.entity';
 import User from '../models/user.entity';
 import { SearchFilters } from '../types';
 import
-{
-  CompressedFile,
-  TMusic,
-  TMusicCreate,
-  TMusicCreateRelations,
-} from '../types/music';
+  {
+    CompressedFile,
+    TMusic,
+    TMusicCreate,
+    TMusicCreateRelations,
+  } from '../types/music';
 import { TUser } from '../types/user';
 
 @Injectable()
@@ -292,16 +292,34 @@ export class MusicsRepository
     try
     {
       const { previewImage, previewTrack, userId, musicId } = data;
-      const previewImageUrl = await this.fileStorageService.uploadFile(previewImage, BucketType.PREVIEW, `${userId}/${musicId}`, 'cover', true);
+      const previewImageUrl = await this.fileStorageService.uploadFile(
+        previewImage,
+        BucketType.PREVIEW,
+        `${userId}/${musicId}`,
+        'cover',
+        true,
+      );
       console.log(previewImageUrl);
-      const previewTrackUrl = await this.fileStorageService.uploadFile(previewTrack, BucketType.PREVIEW, `${userId}/${musicId}`, 'demo', true);
+      const previewTrackUrl = await this.fileStorageService.uploadFile(
+        previewTrack,
+        BucketType.PREVIEW,
+        `${userId}/${musicId}`,
+        'demo',
+        true,
+      );
       console.log(previewTrackUrl);
       // TODO delete if streaming enabled
       let previewCompressedTrackUrl: string;
       try
       {
         const compressedFile = await this.compressFile(previewTrack);
-        previewCompressedTrackUrl = await this.fileStorageService.uploadFile(compressedFile, BucketType.MUSIC_COMPRESSED, `${userId}/${musicId}`, 'demo', true);
+        previewCompressedTrackUrl = await this.fileStorageService.uploadFile(
+          compressedFile,
+          BucketType.MUSIC_COMPRESSED,
+          `${userId}/${musicId}`,
+          'demo',
+          true,
+        );
       } catch (error)
       {
         this.logger.debug(error);
@@ -385,17 +403,32 @@ export class MusicsRepository
         musicId,
       } = data;
 
-      const mp3Url = await this.fileStorageService.uploadFile(mp3, BucketType.MUSIC, `${userId}/${musicId}`, null);
+      const mp3Url = await this.fileStorageService.uploadFile(
+        mp3,
+        BucketType.MUSIC,
+        `${userId}/${musicId}`,
+        null,
+      );
 
       const wavUrls = await Promise.all(
         wav?.map((file) =>
-          this.fileStorageService.uploadFile(file, BucketType.MUSIC, `${userId}/${musicId}`, null),
+          this.fileStorageService.uploadFile(
+            file,
+            BucketType.MUSIC,
+            `${userId}/${musicId}`,
+            null,
+          ),
         ),
       );
 
       const stemsUrls = await Promise.all(
         stems?.map((file) =>
-          this.fileStorageService.uploadFile(file, BucketType.MUSIC, `${userId}/${musicId}`, null),
+          this.fileStorageService.uploadFile(
+            file,
+            BucketType.MUSIC,
+            `${userId}/${musicId}`,
+            null,
+          ),
         ),
       );
 
@@ -860,9 +893,6 @@ export class MusicsRepository
           order.push([options.order[0]]);
         }
       }
-      // } else {
-      //   order.push(['listenCount', 'DESC']);
-      // }
 
       const { cost, relevance, ...filters } = options.filters || {};
 
@@ -1004,48 +1034,61 @@ export class MusicsRepository
         relevanceRange = getRelevanceTimeRange(relevance);
       }
 
-      const { count, rows } =
-        await this.musicsRepository.findAndCountAll({
-          attributes: {
-            exclude: [
-              'listenCount',
-              'categoryIds',
-              'moodIds',
-              'typeIds',
-              'instrumentIds',
-              'keyIds',
-            ],
-          },
-          order,
-          where: { ...where, status: MusicStatus.PUBLISHED },
-          distinct: true,
-          limit: +options.limit,
-          offset: +options.offset,
-          include: includes,
-        });
+      const { count, rows } = await this.musicsRepository.findAndCountAll({
+        attributes: {
+          exclude: [
+            'listenCount',
+            'categoryIds',
+            'moodIds',
+            'typeIds',
+            'instrumentIds',
+            'keyIds',
+          ],
+        },
+        order,
+        where: { ...where, status: MusicStatus.PUBLISHED },
+        distinct: true,
+        limit: +options.limit,
+        offset: +options.offset,
+        include: includes,
+      });
 
-      const allPrices = rows.flatMap(item =>
-        item.files?.map(file =>
-        {
-          if (file.type === 'mp3') return file.cost;
-          return null;
-        }).filter(cost => cost !== null) || []);
+      const allPrices = rows.flatMap(
+        (item) =>
+          item.files
+            ?.map((file) =>
+            {
+              if (file.type === 'mp3') return file.cost;
+              return null;
+            })
+            .filter((cost) => cost !== null) || [],
+      );
 
       const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
 
-      const lte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('lte'));
-      const gte = Object.getOwnPropertySymbols(cost).find(sym => sym.toString().includes('gte'));
+      // const lte = Object.getOwnPropertySymbols(cost).find((sym) =>
+      //   sym.toString().includes('lte'),
+      // );
+      // const gte = Object.getOwnPropertySymbols(cost).find((sym) =>
+      //   sym.toString().includes('gte'),
+      // );
 
       let musics;
-      if (cost && cost[lte] !== 0)
-      {
-        musics = rows.filter(track => track.files.some(file =>
-          file.type === 'mp3' && file.cost >= cost[gte] && file.cost <= cost[lte]));
-      } else
-      {
-        musics = rows;
-      }
+      // if (cost && cost[lte] !== 0)
+      // {
+      //   musics = rows.filter((track) =>
+      //     track.files.some(
+      //       (file) =>
+      //         file.type === 'mp3' &&
+      //         file.cost >= cost[gte] &&
+      //         file.cost <= cost[lte],
+      //     ),
+      //   );
+      // } else
+      // {
+      //   musics = rows;
+      // }
       return { musics, count, maxPrice, minPrice };
     } catch (error)
     {
