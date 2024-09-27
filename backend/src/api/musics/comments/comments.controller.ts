@@ -113,15 +113,11 @@ export class CommentsController
   )
   {
     const userId = String(req.user.id);
-
-    const { canComment, nextCommentTime } =
-      this.commentsService.checkCanComment(userId, userCommentMap);
-
     const { comments } = await this.commentsService.getCommentsByTrack(id);
 
     return {
       comments: comments,
-      nextCommentTime: nextCommentTime || null,
+      nextCommentTime: userCommentMap.get(userId) || null,
     };
   }
 
