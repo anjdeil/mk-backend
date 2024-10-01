@@ -220,6 +220,7 @@ export class StripeService
       switch (event.type)
       {
         case 'customer.subscription.updated': {
+          console.log('userUpdatedAndWeee :>>', user);
           const data = event.data.object as Stripe.Subscription;
           if (data.status === 'active')
           {
@@ -235,7 +236,6 @@ export class StripeService
             const user = await this.usersRepository.findOneByStripeId(
               customerId,
             );
-            console.log('userUpdatedAndWeee :>> ', user);
             await this.notificationsRepository.create({
               type: NotificationType.UPGRAFE_ACCOUNT_PRO,
               userId: +data.metadata.userId,
