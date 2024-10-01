@@ -230,9 +230,15 @@ export class StripeService
               subscriptionPriceId: data.items.data[0].price.id,
             });
             console.log('AfterFirstOne :>>', data);
-            await this.musicsRepository.unblockMusicsByUserId(
-              +data.metadata.userId,
-            );
+            try
+            {
+              await this.musicsRepository.unblockMusicsByUserId(
+                +data.metadata.userId,
+              );
+            } catch (error)
+            {
+              console.error('Error unblocking musics:', error);
+            }
             console.log('AfterSecondOne :>>', data);
             const user = await this.usersRepository.findOneByStripeId(
               customerId,
