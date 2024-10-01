@@ -241,7 +241,8 @@ export class StripeService
               await this.notificationsRepository.create({
                 type: NotificationType.UPGRAFE_ACCOUNT_PRO,
                 userId: +user.id,
-                message: getSellerEmailTemplate(user.name),
+                // message: getSellerEmailTemplate(user.name),
+                message: NotificationMessages.UPGRAFE_ACCOUNT_PRO,
                 link: `/my-profile-seller`,
               });
             } catch (e)
