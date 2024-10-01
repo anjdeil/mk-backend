@@ -229,6 +229,10 @@ export class StripeService
               subscribedUntil,
               subscriptionPriceId: data.items.data[0].price.id,
             });
+            console.log('AfterSecondOne :>>', data);
+            const user = await this.usersRepository.findOneByStripeId(
+              customerId,
+            );
             console.log('AfterFirstOne :>>', data.metadata.userId);
             try
             {
@@ -239,10 +243,6 @@ export class StripeService
             {
               console.error('Error unblocking musics:', error);
             }
-            console.log('AfterSecondOne :>>', data);
-            const user = await this.usersRepository.findOneByStripeId(
-              customerId,
-            );
             console.log('AfterThirdOne :>>', data);
             await this.notificationsRepository.create({
               type: NotificationType.UPGRAFE_ACCOUNT_PRO,
