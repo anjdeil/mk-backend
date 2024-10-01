@@ -237,7 +237,7 @@ export class StripeService
               type: NotificationType.UPGRAFE_ACCOUNT_PRO,
               userId: +user.id,
               message: NotificationMessages.UPGRAFE_ACCOUNT_PRO,
-              link: `/my-profile-seller`,
+              link: `/upload-track`,
             });
           }
           return;
