@@ -7,13 +7,7 @@ import
   } from '@nestjs/common';
 import Stripe from 'stripe';
 
-import
-  {
-    // NotificationType,
-    StripeError,
-    StripeSubscriptionPlan,
-  } from '../../../core/enums';
-// import { NotificationsRepository } from '../../../core/repositories';
+import { StripeError, StripeSubscriptionPlan } from '../../../core/enums';
 import { TUser } from '../../../core/types';
 
 @Injectable()
@@ -21,14 +15,11 @@ export class SubscriptionsService
 {
   private readonly stripe: Stripe;
 
-  // private readonly notificationsRepository: NotificationsRepository;
-  // notificationsRepository: NotificationsRepositor
-  constructor(y)
+  constructor()
   {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-08-16',
     });
-    // this.notificationsRepository = notificationsRepository;
   }
 
   public async createSubscription(
@@ -74,20 +65,6 @@ export class SubscriptionsService
       const subscription = await this.stripe.subscriptions.create(
         subscriptionParams,
       );
-
-      // if (subscription)
-      // {
-      //   await this.notificationsRepository.create({
-      //     type: NotificationType.NEW_FOLLOWER,
-      //     userId: data.followingId,
-      //     message: NotificationMessages.NEW_FOLLOWER({
-      //       name: followerUser.name,
-      //       avatarUrl: followerUser.avatar,
-      //     }),
-      //     link: `/my-profile-seller`,
-      //   });
-      // }
-
       return {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
