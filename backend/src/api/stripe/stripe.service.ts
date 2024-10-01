@@ -232,23 +232,13 @@ export class StripeService
             const user = await this.usersRepository.findOneByStripeId(
               customerId,
             );
-            console.log('AfterThirdOne :>>', data);
             await this.musicsRepository.unblockMusicsByUserId(+user.id);
-
-            console.log('AfterFourthOne :>>', user.id);
-            try
-            {
-              await this.notificationsRepository.create({
-                type: NotificationType.UPGRAFE_ACCOUNT_PRO,
-                userId: +user.id,
-                // message: getSellerEmailTemplate(user.name),
-                message: NotificationMessages.UPGRAFE_ACCOUNT_PRO,
-                link: `/my-profile-seller`,
-              });
-            } catch (e)
-            {
-              console.log('error while adding notification :>>', e);
-            }
+            await this.notificationsRepository.create({
+              type: NotificationType.UPGRAFE_ACCOUNT_PRO,
+              userId: +user.id,
+              message: NotificationMessages.UPGRAFE_ACCOUNT_PRO,
+              link: `/my-profile-seller`,
+            });
           }
           return;
         }
