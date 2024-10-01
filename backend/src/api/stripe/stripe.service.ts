@@ -221,9 +221,9 @@ export class StripeService
       {
         case 'customer.subscription.updated': {
           const data = event.data.object as Stripe.Subscription;
-          console.log('userUpdatedAndWeee :>>', data);
           if (data.status === 'active')
           {
+            console.log('userUpdatedAndWeee :>>', data);
             const customerId: string = data.customer as string;
             const subscribedUntil = new Date(data.current_period_end * 1000);
             await this.usersRepository.updateUserSubsription(customerId, {
