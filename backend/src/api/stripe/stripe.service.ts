@@ -233,6 +233,7 @@ export class StripeService
               customerId,
             );
             console.log('AfterThirdOne :>>', data);
+            console.log('AfterFourthOne :>>', user.id);
             await this.notificationsRepository.create({
               type: NotificationType.UPGRAFE_ACCOUNT_PRO,
               userId: +user.id,
