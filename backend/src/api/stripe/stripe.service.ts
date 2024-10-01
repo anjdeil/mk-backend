@@ -229,10 +229,7 @@ export class StripeService
               subscribedUntil,
               subscriptionPriceId: data.items.data[0].price.id,
             });
-            console.log('AfterFirstOne :>>', data);
-            await this.musicsRepository.unblockMusicsByUserId(
-              +data.metadata.userId,
-            );
+
             console.log('AfterThirdOne :>>', data);
             await this.notificationsRepository.create({
               type: NotificationType.UPGRAFE_ACCOUNT_PRO,
@@ -240,6 +237,11 @@ export class StripeService
               message: getSellerEmailTemplate(user.name),
               link: `/my-profile-seller`,
             });
+
+            console.log('AfterFirstOne :>>', data);
+            await this.musicsRepository.unblockMusicsByUserId(
+              +data.metadata.userId,
+            );
             console.log('AfterSecondOne :>>', data);
             const user = await this.usersRepository.findOneByStripeId(
               customerId,
