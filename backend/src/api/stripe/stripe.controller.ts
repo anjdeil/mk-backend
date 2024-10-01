@@ -105,10 +105,8 @@ export class StripeController
   async handleIncomingEvents(
     @Headers('stripe-signature') signature: string,
     @Body() body: Stripe.Event,
-    @Req() request: AuthRequest,
   )
   {
-    console.log('Webhook event receivedd', request.user.id);
     if (!signature)
     {
       throw new BadRequestException('Missing stripe-signature header');
