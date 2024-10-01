@@ -1,38 +1,43 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Post,
-  Put,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import
+  {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Post,
+    Put,
+    Req,
+    UseGuards,
+  } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiBody,
-  ApiTags,
-} from '@nestjs/swagger';
+import
+  {
+    ApiBearerAuth,
+    ApiOperation,
+    ApiResponse,
+    ApiBody,
+    ApiTags,
+  } from '@nestjs/swagger';
 
 import { SubscriptionsService } from './subscriptions.service';
 import { StripeSubscriptionPlan } from '../../../core/enums';
 import { AuthRequest } from '../../../core/types/common';
 
-export interface CreateSubscriptionDto {
+export interface CreateSubscriptionDto
+{
   price: StripeSubscriptionPlan;
 }
 
-export interface UpdatePaymentMethodDto {
+export interface UpdatePaymentMethodDto
+{
   paymentMethodId: string;
 }
 
 @ApiTags('subscriptions')
 @Controller('subscriptions')
-export class SubscriptionsController {
-  constructor(private readonly subscriptionsService: SubscriptionsService) {}
+export class SubscriptionsController
+{
+  constructor(private readonly subscriptionsService: SubscriptionsService) { }
 
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create subscription' })
@@ -67,7 +72,8 @@ export class SubscriptionsController {
   async createSubscription(
     @Body() data: CreateSubscriptionDto,
     @Req() request: AuthRequest,
-  ) {
+  )
+  {
     return this.subscriptionsService.createSubscription(
       request.user.stripeId,
       data.price,
@@ -82,7 +88,8 @@ export class SubscriptionsController {
   })
   @UseGuards(AuthGuard('jwt'))
   @Delete()
-  async cancelSubscription(@Req() request: AuthRequest) {
+  async cancelSubscription(@Req() request: AuthRequest)
+  {
     return this.subscriptionsService.cancelSubscription(request.user.stripeId);
   }
 
@@ -119,7 +126,9 @@ export class SubscriptionsController {
   async updateSubscription(
     @Body() data: CreateSubscriptionDto,
     @Req() request: AuthRequest,
-  ) {
+  )
+  {
+    console.log('OLLOLOLO', request.user.id);
     return this.subscriptionsService.updateSubscription(
       request.user.stripeId,
       data.price,
@@ -147,7 +156,8 @@ export class SubscriptionsController {
   async updatePaymenMethod(
     @Body() data: UpdatePaymentMethodDto,
     @Req() request: AuthRequest,
-  ) {
+  )
+  {
     return this.subscriptionsService.updatePaymentMethod(
       request.user,
       data.paymentMethodId,
@@ -162,7 +172,8 @@ export class SubscriptionsController {
   })
   @UseGuards(AuthGuard('jwt'))
   @Get()
-  async getSubscription(@Req() request: AuthRequest) {
+  async getSubscription(@Req() request: AuthRequest)
+  {
     return this.subscriptionsService.getSubscription(request.user.stripeId);
   }
 }

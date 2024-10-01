@@ -232,6 +232,7 @@ export class StripeService
             const user = await this.usersRepository.findOneByStripeId(
               customerId,
             );
+
             console.log('AfterThirdOne :>>', data);
             await this.notificationsRepository.create({
               type: NotificationType.UPGRAFE_ACCOUNT_PRO,
@@ -239,6 +240,7 @@ export class StripeService
               message: getSellerEmailTemplate(user.name),
               link: `/my-profile-seller`,
             });
+
             console.log('AfterFirstOne :>>', data.metadata.userId);
             try
             {
