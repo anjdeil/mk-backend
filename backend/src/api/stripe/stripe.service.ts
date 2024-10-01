@@ -220,7 +220,7 @@ export class StripeService
       switch (event.type)
       {
         case 'customer.subscription.updated': {
-          console.log('userUpdatedAndWeee :>>', user);
+          console.log('userUpdatedAndWeee :>>');
           const data = event.data.object as Stripe.Subscription;
           if (data.status === 'active')
           {
