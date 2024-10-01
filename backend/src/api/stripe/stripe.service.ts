@@ -223,6 +223,7 @@ export class StripeService
           const data = event.data.object as Stripe.Subscription;
           if (data.status === 'active')
           {
+            console.log('sadasdsda111', user.id);
             const customerId: string = data.customer as string;
             const subscribedUntil = new Date(data.current_period_end * 1000);
             await this.usersRepository.updateUserSubsription(customerId, {
@@ -241,7 +242,6 @@ export class StripeService
             });
 
             console.log('AfterFirstOne :>>', data.metadata.userId);
-            console.log('sadasdsda111', user.id);
             try
             {
               await this.musicsRepository.unblockMusicsByUserId(
