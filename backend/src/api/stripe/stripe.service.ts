@@ -223,7 +223,6 @@ export class StripeService
           const data = event.data.object as Stripe.Subscription;
           if (data.status === 'active')
           {
-            console.log('sadasdsda111', user.id);
             const customerId: string = data.customer as string;
             const subscribedUntil = new Date(data.current_period_end * 1000);
             await this.usersRepository.updateUserSubsription(customerId, {
@@ -233,6 +232,7 @@ export class StripeService
             const user = await this.usersRepository.findOneByStripeId(
               customerId,
             );
+            console.log('sadasdsda111', user.id);
             console.log('AfterThirdOne :>>', data);
             await this.notificationsRepository.create({
               type: NotificationType.UPGRAFE_ACCOUNT_PRO,
