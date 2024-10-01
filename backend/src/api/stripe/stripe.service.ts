@@ -233,21 +233,21 @@ export class StripeService
               customerId,
             );
             console.log('AfterThirdOne :>>', data);
-            try
-            {
-              await this.musicsRepository.unblockMusicsByUserId(+user.id);
-            } catch (error)
-            {
-              console.error('Error unblocking musics:', error);
-            }
+            await this.musicsRepository.unblockMusicsByUserId(+user.id);
 
             console.log('AfterFourthOne :>>', user.id);
-            await this.notificationsRepository.create({
-              type: NotificationType.UPGRAFE_ACCOUNT_PRO,
-              userId: +user.id,
-              message: getSellerEmailTemplate(user.name),
-              link: `/my-profile-seller`,
-            });
+            try
+            {
+              await this.notificationsRepository.create({
+                type: NotificationType.UPGRAFE_ACCOUNT_PRO,
+                userId: +user.id,
+                message: getSellerEmailTemplate(user.name),
+                link: `/my-profile-seller`,
+              });
+            } catch (e)
+            {
+              console.log('error while adding notification :>>', e);
+            }
           }
           return;
         }
