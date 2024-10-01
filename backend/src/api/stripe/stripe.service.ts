@@ -349,7 +349,7 @@ export class StripeService
                     item.music.title,
                     user.name,
                   ),
-                  link: `/music/${item.music.id}`,
+                  link: `/track/${item.music.id}`,
                 });
               });
 
