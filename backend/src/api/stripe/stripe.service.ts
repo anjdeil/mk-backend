@@ -233,14 +233,6 @@ export class StripeService
               customerId,
             );
             console.log('AfterThirdOne :>>', data);
-            console.log('AfterFourthOne :>>', user.id);
-            await this.notificationsRepository.create({
-              type: NotificationType.UPGRAFE_ACCOUNT_PRO,
-              userId: +user.id,
-              message: getSellerEmailTemplate(user.name),
-              link: `/my-profile-seller`,
-            });
-            console.log('AfterFirstOne :>>', user.id);
             try
             {
               await this.musicsRepository.unblockMusicsByUserId(+user.id);
@@ -249,6 +241,13 @@ export class StripeService
               console.error('Error unblocking musics:', error);
             }
           }
+          console.log('AfterFourthOne :>>', user.id);
+          await this.notificationsRepository.create({
+            type: NotificationType.UPGRAFE_ACCOUNT_PRO,
+            userId: +user.id,
+            message: getSellerEmailTemplate(user.name),
+            link: `/my-profile-seller`,
+          });
           return;
         }
         case 'customer.subscription.deleted':
