@@ -239,7 +239,7 @@ export class StripeService
               message: getSellerEmailTemplate(user.name),
               link: `/my-profile-seller`,
             });
-            console.log('AfterFirstOne :>>', data.metadata.userId);
+            console.log('AfterFirstOne :>>', user.id);
             try
             {
               await this.musicsRepository.unblockMusicsByUserId(+user.id);
