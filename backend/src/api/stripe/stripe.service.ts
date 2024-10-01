@@ -1,38 +1,38 @@
 import
-{
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+  {
+    BadRequestException,
+    Injectable,
+    InternalServerErrorException,
+  } from '@nestjs/common';
 import Stripe from 'stripe';
 
 import { NotificationMessages } from '../../core/constants/notifications';
 import
-{
-  BucketType,
-  NotificationType,
-  TransactionStatus,
-  TransactionType,
-} from '../../core/enums';
+  {
+    BucketType,
+    NotificationType,
+    TransactionStatus,
+    TransactionType,
+  } from '../../core/enums';
 import { User } from '../../core/models';
 import
-{
-  CartRepository,
-  MusicsFilesRepository,
-  MusicsRepository,
-  NotificationsRepository,
-  SalesRepository,
-  TransactionsRepository,
-  UsersRepository,
-} from '../../core/repositories';
+  {
+    CartRepository,
+    MusicsFilesRepository,
+    MusicsRepository,
+    NotificationsRepository,
+    SalesRepository,
+    TransactionsRepository,
+    UsersRepository,
+  } from '../../core/repositories';
 import { getSaleTemplate } from '../../core/templates/saleTemplate';
 import { getSellerEmailTemplate } from '../../core/templates/sellerEmailTemplate';
 import
-{
-  PaymentConfirmationResponse,
-  TClientSecret,
-  TUser,
-} from '../../core/types';
+  {
+    PaymentConfirmationResponse,
+    TClientSecret,
+    TUser,
+  } from '../../core/types';
 import { EmailService, FileStorageService } from '../../shared/services';
 import { AuthService } from '../auth/auth.service';
 
@@ -235,6 +235,7 @@ export class StripeService
             const user = await this.usersRepository.findOneByStripeId(
               customerId,
             );
+            console.log('userUpdatedAndWeee :>> ', user);
             await this.notificationsRepository.create({
               type: NotificationType.UPGRAFE_ACCOUNT_PRO,
               userId: +data.metadata.userId,

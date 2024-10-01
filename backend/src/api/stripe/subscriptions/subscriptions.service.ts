@@ -1,35 +1,50 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import
+  {
+    BadRequestException,
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException,
+  } from '@nestjs/common';
 import Stripe from 'stripe';
 
-import { StripeError, StripeSubscriptionPlan } from '../../../core/enums';
+import
+  {
+    NotificationType,
+    StripeError,
+    StripeSubscriptionPlan,
+  } from '../../../core/enums';
+import { NotificationsRepository } from '../../../core/repositories';
 import { TUser } from '../../../core/types';
 
 @Injectable()
-export class SubscriptionsService {
+export class SubscriptionsService
+{
   private readonly stripe: Stripe;
 
-  constructor() {
+  private readonly notificationsRepository: NotificationsRepository;
+
+  constructor(notificationsRepository: NotificationsRepository)
+  {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-08-16',
     });
+    this.notificationsRepository = notificationsRepository;
   }
 
   public async createSubscription(
     customerId: string,
     price: StripeSubscriptionPlan,
-  ): Promise<{ subscriptionId: string; clientSecret: string }> {
-    try {
+  ): Promise<{ subscriptionId: string; clientSecret: string }>
+  {
+    try
+    {
       const subscriptions = await this.listSubscriptions(customerId);
 
       if (
         subscriptions.data.length &&
         subscriptions.data[0].status === 'active'
-      ) {
+      )
+      {
         throw new BadRequestException('Customer already subscribed');
       }
 
@@ -48,7 +63,8 @@ export class SubscriptionsService {
         customerId,
       )) as Stripe.Customer;
 
-      if (!customer.invoice_settings?.default_payment_method) {
+      if (!customer.invoice_settings?.default_payment_method)
+      {
         subscriptionParams.payment_behavior = 'default_incomplete';
         subscriptionParams.payment_settings = {
           save_default_payment_method: 'on_subscription',
@@ -58,38 +74,59 @@ export class SubscriptionsService {
       const subscription = await this.stripe.subscriptions.create(
         subscriptionParams,
       );
+
+      // if (subscription)
+      // {
+      //   await this.notificationsRepository.create({
+      //     type: NotificationType.NEW_FOLLOWER,
+      //     userId: data.followingId,
+      //     message: NotificationMessages.NEW_FOLLOWER({
+      //       name: followerUser.name,
+      //       avatarUrl: followerUser.avatar,
+      //     }),
+      //     link: `/my-profile-seller`,
+      //   });
+      // }
+
       return {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         clientSecret: subscription.latest_invoice.payment_intent.client_secret,
         subscriptionId: subscription.id,
       };
-    } catch (error) {
-      if (error?.code === StripeError.ResourceMissing) {
+    } catch (error)
+    {
+      if (error?.code === StripeError.ResourceMissing)
+      {
         throw new BadRequestException('Credit card not set up');
       }
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async cancelSubscription(customerId: string): Promise<boolean> {
-    try {
+  public async cancelSubscription(customerId: string): Promise<boolean>
+  {
+    try
+    {
       const subscriptions = await this.listSubscriptions(customerId);
 
-      if (!subscriptions.data.length) {
+      if (!subscriptions.data.length)
+      {
         throw new BadRequestException('Customer not subscribed');
       }
 
       const subscription = subscriptions.data[0];
 
-      if (!subscription) {
+      if (!subscription)
+      {
         throw new NotFoundException('Subscription not found');
       }
 
       await this.stripe.subscriptions.cancel(subscription.id);
 
       return true;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -97,17 +134,21 @@ export class SubscriptionsService {
   public async updateSubscription(
     customerId: string,
     price: StripeSubscriptionPlan,
-  ): Promise<boolean> {
-    try {
+  ): Promise<boolean>
+  {
+    try
+    {
       const subscriptions = await this.listSubscriptions(customerId);
 
-      if (!subscriptions.data.length) {
+      if (!subscriptions.data.length)
+      {
         throw new BadRequestException('Customer not subscribed');
       }
 
       const subscription = subscriptions.data[0];
 
-      if (!subscription) {
+      if (!subscription)
+      {
         throw new NotFoundException('Subscription not found');
       }
 
@@ -121,7 +162,8 @@ export class SubscriptionsService {
       });
 
       return true;
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -129,48 +171,61 @@ export class SubscriptionsService {
   public async updatePaymentMethod(
     user: TUser,
     paymentMethodId: string,
-  ): Promise<void> {
-    try {
+  ): Promise<void>
+  {
+    try
+    {
       const subscription = await this.getSubscription(user.stripeId);
       await this.stripe.subscriptions.update(subscription.id, {
         default_payment_method: paymentMethodId,
       });
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async listPrices(): Promise<Stripe.ApiList<Stripe.Price>> {
-    try {
+  public async listPrices(): Promise<Stripe.ApiList<Stripe.Price>>
+  {
+    try
+    {
       return this.stripe.prices.list();
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
   public async getSubscription(
     customerId: string,
-  ): Promise<Stripe.Subscription> {
-    try {
+  ): Promise<Stripe.Subscription>
+  {
+    try
+    {
       const subscriptions = await this.listSubscriptions(customerId);
-      if (!subscriptions.data.length) {
+      if (!subscriptions.data.length)
+      {
         return null;
       }
 
       return subscriptions.data[0];
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
 
   public async listSubscriptions(
     customerId: string,
-  ): Promise<Stripe.ApiList<Stripe.Subscription>> {
-    try {
+  ): Promise<Stripe.ApiList<Stripe.Subscription>>
+  {
+    try
+    {
       return this.stripe.subscriptions.list({
         customer: customerId,
       });
-    } catch (error) {
+    } catch (error)
+    {
       throw new InternalServerErrorException(error.message);
     }
   }
