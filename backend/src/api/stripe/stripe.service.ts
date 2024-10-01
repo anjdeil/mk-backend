@@ -240,14 +240,15 @@ export class StripeService
             {
               console.error('Error unblocking musics:', error);
             }
+
+            console.log('AfterFourthOne :>>', user.id);
+            await this.notificationsRepository.create({
+              type: NotificationType.UPGRAFE_ACCOUNT_PRO,
+              userId: +user.id,
+              message: getSellerEmailTemplate(user.name),
+              link: `/my-profile-seller`,
+            });
           }
-          console.log('AfterFourthOne :>>', user.id);
-          await this.notificationsRepository.create({
-            type: NotificationType.UPGRAFE_ACCOUNT_PRO,
-            userId: +user.id,
-            message: getSellerEmailTemplate(user.name),
-            link: `/my-profile-seller`,
-          });
           return;
         }
         case 'customer.subscription.deleted':
