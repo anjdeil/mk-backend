@@ -117,7 +117,6 @@ export class StripeService
   {
     try
     {
-      console.log('metadataMetadataMetadataMetadata :>> ', user.id);
       const options = {
         amount: amount,
         currency: 'usd',
@@ -242,6 +241,7 @@ export class StripeService
             });
 
             console.log('AfterFirstOne :>>', data.metadata.userId);
+            console.log('sadasdsda111', user.id);
             try
             {
               await this.musicsRepository.unblockMusicsByUserId(
