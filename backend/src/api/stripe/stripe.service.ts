@@ -223,19 +223,21 @@ export class StripeService
           const data = event.data.object as Stripe.Subscription;
           if (data.status === 'active')
           {
-            console.log('userUpdatedAndWeee :>>', data);
             const customerId: string = data.customer as string;
             const subscribedUntil = new Date(data.current_period_end * 1000);
             await this.usersRepository.updateUserSubsription(customerId, {
               subscribedUntil,
               subscriptionPriceId: data.items.data[0].price.id,
             });
+            console.log('AfterFirstOne :>>', data);
             await this.musicsRepository.unblockMusicsByUserId(
               +data.metadata.userId,
             );
+            console.log('AfterSecondOne :>>', data);
             const user = await this.usersRepository.findOneByStripeId(
               customerId,
             );
+            console.log('AfterThirdOne :>>', data);
             await this.notificationsRepository.create({
               type: NotificationType.UPGRAFE_ACCOUNT_PRO,
               userId: +data.metadata.userId,
