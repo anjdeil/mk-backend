@@ -74,6 +74,7 @@ export class SubscriptionsController
     @Req() request: AuthRequest,
   )
   {
+    console.log('OLLOLOLO', request.user.id);
     return this.subscriptionsService.createSubscription(
       request.user.stripeId,
       data.price,
@@ -128,7 +129,6 @@ export class SubscriptionsController
     @Req() request: AuthRequest,
   )
   {
-    console.log('OLLOLOLO', request.user.id);
     return this.subscriptionsService.updateSubscription(
       request.user.stripeId,
       data.price,
