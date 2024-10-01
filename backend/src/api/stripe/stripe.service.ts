@@ -229,7 +229,7 @@ export class StripeService
               subscribedUntil,
               subscriptionPriceId: data.items.data[0].price.id,
             });
-            console.log('AfterFirstOne :>>', data);
+            console.log('AfterFirstOne :>>', data.metadata);
             try
             {
               await this.musicsRepository.unblockMusicsByUserId(
