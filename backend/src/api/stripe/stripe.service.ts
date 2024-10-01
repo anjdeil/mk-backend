@@ -232,21 +232,17 @@ export class StripeService
             const user = await this.usersRepository.findOneByStripeId(
               customerId,
             );
-            console.log('sadasdsda111', user.id);
             console.log('AfterThirdOne :>>', data);
             await this.notificationsRepository.create({
               type: NotificationType.UPGRAFE_ACCOUNT_PRO,
-              userId: +data.metadata.userId,
+              userId: +user.id,
               message: getSellerEmailTemplate(user.name),
               link: `/my-profile-seller`,
             });
-
             console.log('AfterFirstOne :>>', data.metadata.userId);
             try
             {
-              await this.musicsRepository.unblockMusicsByUserId(
-                +data.metadata.userId,
-              );
+              await this.musicsRepository.unblockMusicsByUserId(+user.id);
             } catch (error)
             {
               console.error('Error unblocking musics:', error);
