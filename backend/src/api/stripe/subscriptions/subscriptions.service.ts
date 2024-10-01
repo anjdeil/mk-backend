@@ -9,11 +9,11 @@ import Stripe from 'stripe';
 
 import
   {
-    NotificationType,
+    // NotificationType,
     StripeError,
     StripeSubscriptionPlan,
   } from '../../../core/enums';
-import { NotificationsRepository } from '../../../core/repositories';
+// import { NotificationsRepository } from '../../../core/repositories';
 import { TUser } from '../../../core/types';
 
 @Injectable()
@@ -21,14 +21,14 @@ export class SubscriptionsService
 {
   private readonly stripe: Stripe;
 
-  private readonly notificationsRepository: NotificationsRepository;
-
-  constructor(notificationsRepository: NotificationsRepository)
+  // private readonly notificationsRepository: NotificationsRepository;
+  // notificationsRepository: NotificationsRepositor
+  constructor(y)
   {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-08-16',
     });
-    this.notificationsRepository = notificationsRepository;
+    // this.notificationsRepository = notificationsRepository;
   }
 
   public async createSubscription(
