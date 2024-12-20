@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -66,6 +67,12 @@ export class AuthService {
           'Unable to sign in with provided credentials. Please check your details and try again.',
         );
       }
+      else if (!user.confirmed) {
+        throw new ForbiddenException(
+          'You have not confirmed your email address',
+        );
+      }
+      
       const token = await this.generateToken(user);
       const refreshToken = await this.generateRefresToken({ id: user.id });
 
