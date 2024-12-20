@@ -1066,10 +1066,10 @@ export class MusicsRepository
 
       const maxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
       const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
-      const lte = Object.getOwnPropertySymbols(cost).find((sym) =>
+      const lte = Object.getOwnPropertySymbols(cost ?? {}).find((sym) =>
         sym.toString().includes('lte'),
       );
-      const gte = Object.getOwnPropertySymbols(cost).find((sym) =>
+      const gte = Object.getOwnPropertySymbols(cost ?? {}).find((sym) =>
         sym.toString().includes('gte'),
       );
 
