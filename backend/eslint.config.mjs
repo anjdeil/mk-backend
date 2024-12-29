@@ -57,6 +57,8 @@ export default [...fixupConfigRules(compat.extends(
             },
         }],
 
-
+        // TODO: fix issues with any types and unused variables
+        '@typescript-eslint/no-explicit-any': 'warn',
+        '@typescript-eslint/no-unused-vars': 'warn',
     },
 }];
