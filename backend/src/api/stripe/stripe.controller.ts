@@ -1,22 +1,20 @@
-import
-  {
-    BadRequestException,
-    Body,
-    Controller,
-    Headers,
-    Post,
-    Req,
-    UseGuards,
-  } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Headers,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import
-  {
-    ApiBearerAuth,
-    ApiBody,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
-  } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import Stripe from 'stripe';
 
 import { StripeService } from './stripe.service';
@@ -27,9 +25,8 @@ import { AuthRequest } from '../../core/types/common';
 
 @ApiTags('stripe')
 @Controller('stripe')
-export class StripeController
-{
-  constructor(private readonly stripeService: StripeService) { }
+export class StripeController {
+  constructor(private readonly stripeService: StripeService) {}
 
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create customer' })
@@ -37,8 +34,7 @@ export class StripeController
   @AllowedRoles(Roles.SELLER, Roles.BUYER)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('create-customer')
-  public async createCustomer(@Req() req: AuthRequest)
-  {
+  public async createCustomer(@Req() req: AuthRequest) {
     return await this.stripeService.createCustomer(req.user);
   }
 
@@ -61,8 +57,7 @@ export class StripeController
   })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('payment-confirm')
-  public async confirmPayment(@Req() req: AuthRequest)
-  {
+  public async confirmPayment(@Req() req: AuthRequest) {
     return await this.stripeService.confirmPayment(
       req.body.paymentIntent,
       req.body.paymentMethodId,
@@ -92,8 +87,7 @@ export class StripeController
   @AllowedRoles(Roles.SELLER, Roles.BUYER)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('create-payment-intent')
-  public async createPaymentIntent(@Req() req: AuthRequest, @Body() data)
-  {
+  public async createPaymentIntent(@Req() req: AuthRequest, @Body() data) {
     return await this.stripeService.createPaymentIntent(
       data.amount,
       req.user,
@@ -105,10 +99,8 @@ export class StripeController
   async handleIncomingEvents(
     @Headers('stripe-signature') signature: string,
     @Body() body: Stripe.Event,
-  )
-  {
-    if (!signature)
-    {
+  ) {
+    if (!signature) {
       throw new BadRequestException('Missing stripe-signature header');
     }
     await this.stripeService.handleEvent(body);

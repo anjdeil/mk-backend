@@ -90,7 +90,7 @@ export class PlaylistController {
     files: TPlaylistsCreateCoverImage,
     @Body() updatePlaylistDto: UpdatePlaylistDto,
   ) {
-    console.log(files)
+    console.log(files);
     return await this.playlistService.updatePlaylist(
       id,
       updatePlaylistDto,

@@ -1,5 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {IsEnum, IsInt, IsObject, IsOptional, IsString, Min} from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsObject,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 
 import { SearchTarget } from '../swagger.objects/search.schema';
 import { SearchFilters } from '../types/search';

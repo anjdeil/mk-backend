@@ -1,9 +1,9 @@
-// eslint-disable-next-line import/order
 import * as newrelic from 'newrelic';
 
-/* eslint-disable @typescript-eslint/no-var-requires */
 // import TransportStream from 'winston-transport';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const winston = require('winston');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const TransportStream = require('winston-transport');
 // const Transport = require('winston-transport');
 

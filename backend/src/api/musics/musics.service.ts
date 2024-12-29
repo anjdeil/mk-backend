@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import
-{
+import {
   BadRequestException,
   ForbiddenException,
   Injectable,
@@ -11,8 +10,7 @@ import
 import { FindOptions } from 'sequelize';
 
 import { NotificationMessages } from '../../core/constants/notifications';
-import
-{
+import {
   BucketType,
   MusicStatus,
   NotificationType,
@@ -20,8 +18,7 @@ import
 } from '../../core/enums';
 import { byteToMb } from '../../core/helpers';
 import { Music } from '../../core/models';
-import
-{
+import {
   CartRepository,
   MusicsFilesRepository,
   MusicsRepository,
@@ -29,8 +26,7 @@ import
   SalesRepository,
 } from '../../core/repositories';
 import { FollowRepository } from '../../core/repositories/follow.repository';
-import
-{
+import {
   CompressResult,
   TMusicCreate,
   TMusicCreateFiles,
@@ -40,8 +36,7 @@ import
 import { FileStorageService } from '../../shared/services';
 
 @Injectable()
-export class MusicsService
-{
+export class MusicsService {
   private readonly logger: LoggerService = new Logger(MusicsService.name);
   constructor(
     private readonly musicsRepository: MusicsRepository,
@@ -52,10 +47,9 @@ export class MusicsService
     private readonly followRepository: FollowRepository,
     private readonly cartRepository: CartRepository,
     private readonly httpService: HttpService,
-  ) { }
+  ) {}
 
-  public async generateCompressed(): Promise<CompressResult[]>
-  {
+  public async generateCompressed(): Promise<CompressResult[]> {
     this.logger.debug('generating...');
 
     const nonCompressedMusic = await this.musicsRepository.defaultFindAll({
@@ -67,8 +61,7 @@ export class MusicsService
     });
 
     const batchResults: CompressResult[] = [];
-    for (const music of nonCompressedMusic)
-    {
+    for (const music of nonCompressedMusic) {
       const start = process.hrtime();
       const { data }: { data: Buffer } = await this.httpService.axiosRef(
         music.previewTrack,
@@ -88,14 +81,17 @@ export class MusicsService
         size_after: byteToMb(Buffer.byteLength(compressedFile.buffer)),
       });
 
-      try
-      {
-        url = await this.fileStorageService.uploadFile(compressedFile, BucketType.MUSIC_COMPRESSED, `${music.artistId}/${music.id}`, null, true);
-      } catch (error)
-      {
+      try {
+        url = await this.fileStorageService.uploadFile(
+          compressedFile,
+          BucketType.MUSIC_COMPRESSED,
+          `${music.artistId}/${music.id}`,
+          null,
+          true,
+        );
+      } catch (error) {
         this.logger.error(error);
-      } finally
-      {
+      } finally {
         const end = process.hrtime(start);
         const elapsedTimeInMilliseconds = end[0] * 1000 + end[1] / 1000000;
 
@@ -113,17 +109,13 @@ export class MusicsService
       }
     }
 
-    for (const result of batchResults)
-    {
-      if (result.status === 'OK' && result.details?.id)
-      {
-        try
-        {
+    for (const result of batchResults) {
+      if (result.status === 'OK' && result.details?.id) {
+        try {
           await this.musicsRepository.update(result.details.id, {
             previewCompressedTrack: result.url,
           });
-        } catch (error)
-        {
+        } catch (error) {
           this.logger.error(error);
           result.status = 'SAVE_ERROR';
         }
@@ -133,17 +125,20 @@ export class MusicsService
     return batchResults;
   }
 
-  public async compress(file: Express.Multer.File): Promise<string>
-  {
+  public async compress(file: Express.Multer.File): Promise<string> {
     this.logger.debug('compressing...');
     const compressedFile = await this.musicsRepository.compressFile(file);
 
-    try
-    {
-      const url = await this.fileStorageService.uploadFile(compressedFile, BucketType.MUSIC_COMPRESSED, `TEST-FOLDER`, null, true);
+    try {
+      const url = await this.fileStorageService.uploadFile(
+        compressedFile,
+        BucketType.MUSIC_COMPRESSED,
+        `TEST-FOLDER`,
+        null,
+        true,
+      );
       return url;
-    } catch (error)
-    {
+    } catch (error) {
       this.logger.error(error);
     }
   }
@@ -152,15 +147,12 @@ export class MusicsService
     data: TMusicCreate,
     files: TMusicCreateFiles,
     user: TUser,
-  ): Promise<Music>
-  {
+  ): Promise<Music> {
     const publishedMusic =
       await this.musicsRepository.countPublishedMusicByUserId(user.id);
 
-    if (user.subscribedUntil < new Date())
-    {
-      if (publishedMusic.length >= 2)
-      {
+    if (user.subscribedUntil < new Date()) {
+      if (publishedMusic.length >= 2) {
         throw new ForbiddenException(
           'You can not create more than 2 music with free subscription',
         );
@@ -173,13 +165,13 @@ export class MusicsService
     const safeCategories = Array.isArray(categories)
       ? categories
       : categories
-        ? [categories]
-        : [];
+      ? [categories]
+      : [];
     const safeInstruments = Array.isArray(instruments)
       ? instruments
       : instruments
-        ? [instruments]
-        : [];
+      ? [instruments]
+      : [];
     const safeKeys = Array.isArray(keys) ? keys : keys ? [keys] : [];
     const safeMoods = Array.isArray(moods) ? moods : moods ? [moods] : [];
 
@@ -219,8 +211,7 @@ export class MusicsService
       musicId: music.id,
     });
 
-    if (publishedMusic.length === 1)
-    {
+    if (publishedMusic.length === 1) {
       await this.notificationsRepository.create({
         type: NotificationType.MUSIC_MAX_PUBLISHED,
         userId: user.id,
@@ -236,37 +227,30 @@ export class MusicsService
     id: number,
     data: Partial<TMusicUpdate>,
     user: TUser,
-  ): Promise<Music>
-  {
+  ): Promise<Music> {
     const music = await this.musicsRepository.findOneById(id);
 
-    if (!music)
-    {
+    if (!music) {
       throw new BadRequestException('Music not found');
     }
 
-    if (user.role == Roles.SELLER)
-    {
-      if (music.artistId != user.id)
-      {
+    if (user.role == Roles.SELLER) {
+      if (music.artistId != user.id) {
         throw new ForbiddenException(
           'You can not update music of other artist',
         );
-      } else
-      {
+      } else {
         if (
           data.status &&
           data.status === MusicStatus.PUBLISHED &&
           user.subscribedUntil < new Date()
-        )
-        {
+        ) {
           const publishedMusic =
             await this.musicsRepository.countPublishedMusicByUserId(user.id);
           if (
             publishedMusic.length >= 2 &&
             !publishedMusic.includes(music.id)
-          )
-          {
+          ) {
             throw new BadRequestException(
               'You can not create more than 2 music with free subscription',
             );
@@ -275,10 +259,8 @@ export class MusicsService
       }
     }
 
-    if (user.role == Roles.ADMIN || user.role == Roles.MODERATOR)
-    {
-      if (data.status && data.status === MusicStatus.APPROVED)
-      {
+    if (user.role == Roles.ADMIN || user.role == Roles.MODERATOR) {
+      if (data.status && data.status === MusicStatus.APPROVED) {
         await this.notificationsRepository.create({
           type: NotificationType.MUSIC_PUBLISHED,
           userId: music.artistId,
@@ -290,8 +272,7 @@ export class MusicsService
           music.artistId,
         );
 
-        for (const id of ids)
-        {
+        for (const id of ids) {
           await this.notificationsRepository.create({
             type: NotificationType.FOLLOWING_USER_ACTION,
             userId: id,
@@ -305,8 +286,7 @@ export class MusicsService
         }
       }
 
-      if (data.status && data.status === MusicStatus.REJECTED)
-      {
+      if (data.status && data.status === MusicStatus.REJECTED) {
         await this.notificationsRepository.create({
           type: NotificationType.MUSIC_DECLINED,
           userId: music.artistId,
@@ -320,8 +300,7 @@ export class MusicsService
       (data.status && data.status === MusicStatus.BLOCKED) ||
       data.status === MusicStatus.REJECTED ||
       data.status === MusicStatus.UNPUBLISHED
-    )
-    {
+    ) {
       await this.cartRepository.deleteAllByFiles(
         music.files.map((file) => file.id),
       );
@@ -348,17 +327,14 @@ export class MusicsService
   public async findOneById(
     id: number,
     user: TUser | undefined,
-  ): Promise<Music>
-  {
+  ): Promise<Music> {
     const music = await this.musicsRepository.findOneById(id);
 
-    if (!music)
-    {
+    if (!music) {
       throw new BadRequestException('Music not found');
     }
 
-    if (!user && music.status !== MusicStatus.PUBLISHED)
-    {
+    if (!user && music.status !== MusicStatus.PUBLISHED) {
       throw new ForbiddenException('You have not access to this music');
     }
 
@@ -366,24 +342,19 @@ export class MusicsService
       user.role !== Roles.ADMIN &&
       user.role !== Roles.MODERATOR &&
       music.status !== MusicStatus.PUBLISHED
-    )
-    {
-      if (user.id !== music.artistId)
-      {
+    ) {
+      if (user.id !== music.artistId) {
         throw new ForbiddenException('You have not access to this music');
       }
     }
     return music;
   }
 
-  public async findAll(filters: FindOptions): Promise<Music[]>
-  {
-    try
-    {
+  public async findAll(filters: FindOptions): Promise<Music[]> {
+    try {
       filters.where = { ...filters.where, status: MusicStatus.PUBLISHED };
       return await this.musicsRepository.findAll(filters);
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -391,16 +362,13 @@ export class MusicsService
   public async findAllMyMusic(
     filters: FindOptions,
     artistId: number,
-  ): Promise<Music[]>
-  {
-    try
-    {
+  ): Promise<Music[]> {
+    try {
       return await this.musicsRepository.findAll({
         ...filters,
         where: { ...filters.where, artistId },
       });
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -408,13 +376,10 @@ export class MusicsService
   public async downloadMusic(
     fileId: number,
     user: TUser,
-  ): Promise<{ url: string }>
-  {
-    try
-    {
+  ): Promise<{ url: string }> {
+    try {
       const sale = await this.salesRepository.findOne(fileId, user.id);
-      if (!sale)
-      {
+      if (!sale) {
         throw new ForbiddenException('You have not bought this music yet');
       }
 
@@ -422,8 +387,7 @@ export class MusicsService
       const key = this.fileStorageService.getFilePath(file);
       const url = await this.fileStorageService.getFile(BucketType.MUSIC, key);
       return { url };
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }

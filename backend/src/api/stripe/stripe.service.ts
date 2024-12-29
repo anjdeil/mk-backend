@@ -1,44 +1,39 @@
-import
-  {
-    BadRequestException,
-    Injectable,
-    InternalServerErrorException,
-  } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import Stripe from 'stripe';
 
 import { NotificationMessages } from '../../core/constants/notifications';
-import
-  {
-    BucketType,
-    NotificationType,
-    TransactionStatus,
-    TransactionType,
-  } from '../../core/enums';
+import {
+  BucketType,
+  NotificationType,
+  TransactionStatus,
+  TransactionType,
+} from '../../core/enums';
 import { User } from '../../core/models';
-import
-  {
-    CartRepository,
-    MusicsFilesRepository,
-    MusicsRepository,
-    NotificationsRepository,
-    SalesRepository,
-    TransactionsRepository,
-    UsersRepository,
-  } from '../../core/repositories';
+import {
+  CartRepository,
+  MusicsFilesRepository,
+  MusicsRepository,
+  NotificationsRepository,
+  SalesRepository,
+  TransactionsRepository,
+  UsersRepository,
+} from '../../core/repositories';
 import { getSaleTemplate } from '../../core/templates/saleTemplate';
 import { getSellerEmailTemplate } from '../../core/templates/sellerEmailTemplate';
-import
-  {
-    PaymentConfirmationResponse,
-    TClientSecret,
-    TUser,
-  } from '../../core/types';
+import {
+  PaymentConfirmationResponse,
+  TClientSecret,
+  TUser,
+} from '../../core/types';
 import { EmailService, FileStorageService } from '../../shared/services';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
-export class StripeService
-{
+export class StripeService {
   private readonly stripe: Stripe;
 
   constructor(
@@ -52,22 +47,18 @@ export class StripeService
     private readonly authService: AuthService,
     private readonly emailService: EmailService,
     private readonly fileStorageService: FileStorageService,
-  )
-  {
+  ) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-08-16',
     });
   }
 
-  public async createCustomer(user: TUser): Promise<User>
-  {
+  public async createCustomer(user: TUser): Promise<User> {
     const { id, email, name, stripeId } = user;
-    if (stripeId)
-    {
+    if (stripeId) {
       throw new BadRequestException('User already has a stripe account');
     }
-    try
-    {
+    try {
       const customer = await this.stripe.customers.create({
         email,
         name,
@@ -78,16 +69,13 @@ export class StripeService
       return await this.usersRepository.update(id, {
         stripeId: customer.id,
       });
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async getClientKey(user: TUser): Promise<TClientSecret>
-  {
-    try
-    {
+  public async getClientKey(user: TUser): Promise<TClientSecret> {
+    try {
       const options = {
         amount: 0,
         currency: 'usd',
@@ -102,8 +90,7 @@ export class StripeService
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
       };
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -113,10 +100,8 @@ export class StripeService
     user: TUser,
     paymentMethodId: string | null = undefined,
     metadata = {},
-  ): Promise<TClientSecret>
-  {
-    try
-    {
+  ): Promise<TClientSecret> {
+    try {
       const options = {
         amount: amount,
         currency: 'usd',
@@ -128,8 +113,7 @@ export class StripeService
         },
       };
 
-      if (paymentMethodId)
-      {
+      if (paymentMethodId) {
         options['payment_method'] = paymentMethodId;
       }
 
@@ -138,8 +122,7 @@ export class StripeService
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
       };
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -147,17 +130,14 @@ export class StripeService
   public async constructEventFromPayload(
     signature: string,
     payload: Buffer,
-  ): Promise<Stripe.Event>
-  {
-    try
-    {
+  ): Promise<Stripe.Event> {
+    try {
       return this.stripe.webhooks.constructEvent(
         payload,
         signature,
         process.env.STRIPE_WEBHOOK_SECRET,
       );
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -165,14 +145,11 @@ export class StripeService
   public async confirmPayment(
     paymentIntentId: string,
     paymentMethodId?: string,
-  ): Promise<PaymentConfirmationResponse>
-  {
-    try
-    {
+  ): Promise<PaymentConfirmationResponse> {
+    try {
       const confirmOptions: Stripe.PaymentIntentConfirmParams = {};
 
-      if (paymentMethodId)
-      {
+      if (paymentMethodId) {
         confirmOptions.payment_method = paymentMethodId;
       }
 
@@ -181,8 +158,7 @@ export class StripeService
         confirmOptions,
       );
 
-      if (paymentConfirmation.status === 'succeeded')
-      {
+      if (paymentConfirmation.status === 'succeeded') {
         const userId = +paymentConfirmation.metadata.userId;
         await this.musicsRepository.unblockMusicsByUserId(userId);
         const cart = await this.cartRepository.findAll(userId);
@@ -207,22 +183,17 @@ export class StripeService
 
         return { paymentConfirmation, salesData };
       }
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async handleEvent(event: Stripe.Event): Promise<void>
-  {
-    try
-    {
-      switch (event.type)
-      {
+  public async handleEvent(event: Stripe.Event): Promise<void> {
+    try {
+      switch (event.type) {
         case 'customer.subscription.updated': {
           const data = event.data.object as Stripe.Subscription;
-          if (data.status === 'active')
-          {
+          if (data.status === 'active') {
             const customerId: string = data.customer as string;
             const subscribedUntil = new Date(data.current_period_end * 1000);
             await this.usersRepository.updateUserSubsription(customerId, {
@@ -269,20 +240,17 @@ export class StripeService
           break;
         case 'charge.succeeded':
           {
-            try
-            {
+            try {
               const data = event.data.object as Stripe.PaymentIntent;
               let user;
               let isUnAuthFlow = false;
-              if (data.metadata.user)
-              {
+              if (data.metadata.user) {
                 isUnAuthFlow = true;
                 user = await this.authService.createWithoutPassword({
                   ...JSON.parse(data.metadata.user),
                   stripeId: data.metadata.customerId,
                 });
-              } else
-              {
+              } else {
                 user = await this.usersRepository.findOneById(
                   +data.metadata.userId,
                 );
@@ -312,8 +280,7 @@ export class StripeService
 
               await this.salesRepository.bulkCreate(salesData);
 
-              const promises = files.map(async (item) =>
-              {
+              const promises = files.map(async (item) => {
                 const itemPath = this.fileStorageService.getFilePath(item);
                 const linkUrl = await this.fileStorageService.getFile(
                   BucketType.MUSIC,
@@ -332,16 +299,14 @@ export class StripeService
                 getSaleTemplate({ name: user.name, links }),
               );
 
-              if (!isUnAuthFlow)
-              {
+              if (!isUnAuthFlow) {
                 await this.cartRepository.deleteAllByFileIds(
                   user.id,
                   JSON.parse(data.metadata.fileIds),
                 );
               }
 
-              const notificationsData = files.map((item) =>
-              {
+              const notificationsData = files.map((item) => {
                 return this.notificationsRepository.create({
                   userId: item.userId,
                   type: NotificationType.MUSIC_BOUGHT,
@@ -354,8 +319,7 @@ export class StripeService
               });
 
               await Promise.all(notificationsData);
-            } catch (e)
-            {
+            } catch (e) {
               console.log('e :>> ', e);
             }
           }
@@ -363,8 +327,7 @@ export class StripeService
         default:
           return;
       }
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }

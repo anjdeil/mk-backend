@@ -5,11 +5,11 @@ module.exports = {
     await queryInterface.addColumn('users', 'verified', {
       type: Sequelize.BOOLEAN,
       allowNull: false,
-      defaultValue: false
+      defaultValue: false,
     });
   },
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.removeColumn('users', 'verified');
-  }
+  },
 };

@@ -6,8 +6,8 @@ import { CoreModule } from '../../core/core.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-    imports: [CoreModule, NotificationsModule],
-    providers: [FollowService],
-    controllers: [FollowsController],
+  imports: [CoreModule, NotificationsModule],
+  providers: [FollowService],
+  controllers: [FollowsController],
 })
 export class FollowsModule {}

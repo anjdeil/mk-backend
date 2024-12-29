@@ -2,15 +2,13 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { FindOptions } from 'sequelize';
 
 import { NotificationMessages } from '../../core/constants/notifications';
-import
-{
+import {
   NotificationType,
   TransactionStatus,
   TransactionType,
 } from '../../core/enums';
 import { Transactions, User, Withdrawal } from '../../core/models';
-import
-{
+import {
   BillingAddressRepository,
   NotificationsRepository,
   PayoutRepository,
@@ -19,39 +17,33 @@ import
 } from '../../core/repositories';
 
 @Injectable()
-export class WithdrawalService
-{
+export class WithdrawalService {
   constructor(
     private readonly withdrawalRepository: WithdrawalRepository,
     private readonly transactionRepository: TransactionsRepository,
     private readonly billingAddressRepository: BillingAddressRepository,
     private readonly payoutRepository: PayoutRepository,
     private readonly notificationRepository: NotificationsRepository,
-  ) { }
+  ) {}
 
-  public async create(amount: number, userId: number): Promise<Withdrawal>
-  {
-    try
-    {
+  public async create(amount: number, userId: number): Promise<Withdrawal> {
+    try {
       const billingAddress = await this.billingAddressRepository.findOneById(
         userId,
       );
       const payout = await this.payoutRepository.findOneById(userId);
 
-      if (!billingAddress)
-      {
+      if (!billingAddress) {
         throw new BadRequestException('Billing address not found');
       }
 
-      if (!payout)
-      {
+      if (!payout) {
         throw new BadRequestException('Payout not found');
       }
 
       const balance = await this.transactionRepository.countBalance(userId);
 
-      if (balance < amount)
-      {
+      if (balance < amount) {
         throw new BadRequestException('Insufficient funds');
       }
 
@@ -68,8 +60,7 @@ export class WithdrawalService
         transactionId: transaction.id,
       });
       return widthdrawal;
-    } catch (error)
-    {
+    } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
@@ -77,10 +68,8 @@ export class WithdrawalService
   public async update(
     id: number,
     bankTransactionId: string,
-  ): Promise<Withdrawal>
-  {
-    try
-    {
+  ): Promise<Withdrawal> {
+    try {
       const widthdrawal = await this.withdrawalRepository.update(id, {
         bankTransactionId,
       });
@@ -91,8 +80,7 @@ export class WithdrawalService
       );
 
       return widthdrawal;
-    } catch (error)
-    {
+    } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
@@ -100,14 +88,11 @@ export class WithdrawalService
   public async changeStatus(
     id: number,
     status: TransactionStatus,
-  ): Promise<Withdrawal>
-  {
-    try
-    {
+  ): Promise<Withdrawal> {
+    try {
       const withdrawal = await this.withdrawalRepository.findOneById(id);
 
-      if (!withdrawal)
-      {
+      if (!withdrawal) {
         throw new BadRequestException('Withdrawal not found');
       }
 
@@ -116,8 +101,7 @@ export class WithdrawalService
         status,
       );
 
-      if (status === TransactionStatus.REJECTED)
-      {
+      if (status === TransactionStatus.REJECTED) {
         await this.notificationRepository.create({
           type: NotificationType.WITHDRAWAL_REJECTED,
           userId: withdrawal.userId,
@@ -126,8 +110,7 @@ export class WithdrawalService
         });
       }
 
-      if (status === TransactionStatus.FINISHED)
-      {
+      if (status === TransactionStatus.FINISHED) {
         await this.notificationRepository.create({
           type: NotificationType.WITHDRAWAL,
           userId: withdrawal.userId,
@@ -138,24 +121,20 @@ export class WithdrawalService
 
       withdrawal.transaction.status = status;
       return withdrawal;
-    } catch (error)
-    {
+    } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  public async findAll(options: FindOptions): Promise<Withdrawal[]>
-  {
-    try
-    {
+  public async findAll(options: FindOptions): Promise<Withdrawal[]> {
+    try {
       options.include = [
         Transactions,
         { model: User, attributes: ['id', 'name', 'email'] },
       ];
       const widthdrawals = await this.withdrawalRepository.findAll(options);
       return widthdrawals;
-    } catch (error)
-    {
+    } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
@@ -163,17 +142,14 @@ export class WithdrawalService
   public async findOneByUserId(
     userId: number,
     options: FindOptions,
-  ): Promise<Withdrawal>
-  {
-    try
-    {
+  ): Promise<Withdrawal> {
+    try {
       const widthdrawal = await this.withdrawalRepository.findOneByUserId(
         userId,
         options,
       );
       return widthdrawal;
-    } catch (error)
-    {
+    } catch (error) {
       throw new BadRequestException(error.message);
     }
   }

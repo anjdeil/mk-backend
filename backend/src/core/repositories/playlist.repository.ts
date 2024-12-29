@@ -21,7 +21,7 @@ import Music from '../models/music.entity';
 import Playlist from '../models/playlist.entity';
 import PlaylistFollow from '../models/playlistFollow.entity';
 import PlaylistMusic from '../models/playlistTracks.entity';
-import {CompressedFile, TPlaylistsCreateCoverImage} from '../types';
+import { CompressedFile, TPlaylistsCreateCoverImage } from '../types';
 
 @Injectable()
 export class PlaylistsRepository {

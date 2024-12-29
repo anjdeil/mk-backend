@@ -6,9 +6,9 @@ import {
   getModerHelpRequestTemplate,
   getUserHelpRequestTemplate,
 } from '../../core/templates';
+import { getNotificationTemplate } from '../../core/templates/notificationTemplate';
 import { THelp } from '../../core/types/help';
 import { EmailService } from '../../shared/services';
-import {getNotificationTemplate} from "../../core/templates/notificationTemplate";
 
 @Injectable()
 export class HelpService {

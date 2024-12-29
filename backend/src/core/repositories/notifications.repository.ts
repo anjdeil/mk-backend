@@ -1,5 +1,4 @@
-import
-{
+import {
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -17,20 +16,17 @@ import { TNotification } from '../types/notification';
 import { TSettingsItem } from '../types/settings';
 
 @Injectable()
-export class NotificationsRepository
-{
+export class NotificationsRepository {
   constructor(
     @Inject(NOTIFICATION_REPOSITORY)
     private readonly notificationsRepository: typeof Notifications,
     private readonly socketService: SocketService,
     private readonly settingsRepository: SettingsRepository,
     private readonly emailService: EmailService,
-  ) { }
+  ) {}
 
-  public async create(data: TNotification): Promise<void>
-  {
-    try
-    {
+  public async create(data: TNotification): Promise<void> {
+    try {
       const userSettings = await this.settingsRepository.findOneByUser(
         data.userId,
       );
@@ -46,8 +42,7 @@ export class NotificationsRepository
         notification,
       );
 
-      if (push)
-      {
+      if (push) {
         this.socketService.sendMessageToClient(
           notification.userId,
           'notification',
@@ -55,8 +50,7 @@ export class NotificationsRepository
         );
       }
 
-      if (email)
-      {
+      if (email) {
         await this.emailService.sendEmail(
           notification.user.email,
           getNotificationTemplate({
@@ -65,25 +59,21 @@ export class NotificationsRepository
           }),
         );
       }
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
   public async setReadForAllNotifications(
     userId: number,
-  ): Promise<Notifications[]>
-  {
-    try
-    {
+  ): Promise<Notifications[]> {
+    try {
       await this.notificationsRepository.update(
         { read: true },
         { where: { userId } },
       );
       return await this.findAllByUser(userId);
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -91,59 +81,47 @@ export class NotificationsRepository
   public async setReadForNotificationsById(
     userId: number,
     id: number | number[],
-  ): Promise<Notifications[]>
-  {
-    try
-    {
+  ): Promise<Notifications[]> {
+    try {
       await this.notificationsRepository.update(
         { read: true },
         { where: { userId, id } },
       );
       return await this.findAllByUser(userId);
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async findAllByUser(userId: number): Promise<Notifications[]>
-  {
-    try
-    {
+  public async findAllByUser(userId: number): Promise<Notifications[]> {
+    try {
       return await this.notificationsRepository.findAll<Notifications>({
         where: { userId },
         order: [['id', 'DESC']],
       });
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async findAllUnreadByUser(userId: number): Promise<Notifications[]>
-  {
-    try
-    {
+  public async findAllUnreadByUser(userId: number): Promise<Notifications[]> {
+    try {
       return await this.notificationsRepository.findAll<Notifications>({
         where: { userId, read: false },
         order: [['id', 'DESC']],
       });
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async findOneById(id: number): Promise<Notifications>
-  {
-    try
-    {
+  public async findOneById(id: number): Promise<Notifications> {
+    try {
       return await this.notificationsRepository.findOne<Notifications>({
         where: { id },
         include: ['user'],
       });
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -151,10 +129,8 @@ export class NotificationsRepository
   private checkIfSettingsAllowNotification(
     userSettings: Settings,
     notification,
-  ): TSettingsItem
-  {
-    switch (notification.type)
-    {
+  ): TSettingsItem {
+    switch (notification.type) {
       case NotificationType.COMMENTED_TO_COMMENT:
         return userSettings.mentions;
       case NotificationType.COMMENTED_TO_MUSIC:

@@ -67,7 +67,6 @@ import MusicMoods from '../models/musicMoods.entity';
 import MusicTypes from '../models/musicTypes.entity';
 import Notifications from '../models/notifications.entity';
 import Payout from '../models/payout.entity';
-import PlaylistFollowEntity from '../models/playlistFollow.entity';
 import PlaylistFollow from '../models/playlistFollow.entity';
 import Reports from '../models/reports.entity';
 import ResetPassword from '../models/resetPassword.entity';
@@ -95,6 +94,7 @@ import { MoodsRepository } from '../repositories/moods.repository';
 import { MusicsRepository } from '../repositories/musics.repository';
 import { NotificationsRepository } from '../repositories/notifications.repository';
 import { PayoutRepository } from '../repositories/payout.repository';
+import { PlaylistFollowRepository } from '../repositories/playlistFollow.repository';
 import { ReportRepository } from '../repositories/report.repository';
 import { ResetPasswordRepository } from '../repositories/resetPassword.repository';
 import { SalesRepository } from '../repositories/sales.repository';
@@ -107,7 +107,6 @@ import { SocketService } from '../services/socket/socket.service';
 import { JwtQueryStrategy, RefreshStrategy } from '../strategies';
 import { JwtStrategy } from '../strategies/jwt.strategy';
 import { JwtOptionalStrategy } from '../strategies/jwtOptional.strategy';
-import {PlaylistFollowRepository} from "../repositories/playlistFollow.repository";
 
 const CoreProviders: Provider[] = [
   {

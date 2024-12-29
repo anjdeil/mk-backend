@@ -17,9 +17,9 @@ import {
   ApiOperation,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { SearchFiltersDto } from 'src/core/dto';
 
 import { PlaylistFollowService } from './playlist-follow.service';
+import { SearchFiltersDto } from '../../../core/dto';
 import { Playlist } from '../../../core/models';
 
 @ApiTags('playlist-follows')

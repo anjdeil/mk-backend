@@ -41,11 +41,7 @@ export class PlaylistService {
     files: TPlaylistsCreateCoverImage,
   ): Promise<void> {
     try {
-      const updated = await this.playlistsRepository.update(
-        id,
-        data,
-        files,
-      );
+      const updated = await this.playlistsRepository.update(id, data, files);
       if (!updated) {
         throw new NotFoundException(`Playlist with id ${id} not found.`);
       }

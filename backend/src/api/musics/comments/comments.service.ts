@@ -1,37 +1,32 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
-import { TMusicsComments } from './../../../core/types/comments';
 import { NotificationMessages } from '../../../core/constants/notifications';
 import { NotificationType } from '../../../core/enums';
 import { MusicsComments } from '../../../core/models';
-import
-  {
-    MusicsCommentsRepository,
-    MusicsRepository,
-    NotificationsRepository,
-  } from '../../../core/repositories';
+import {
+  MusicsCommentsRepository,
+  MusicsRepository,
+  NotificationsRepository,
+} from '../../../core/repositories';
 import { TUser } from '../../../core/types';
+import { TMusicsComments } from './../../../core/types/comments';
 
 @Injectable()
-export class CommentsService
-{
+export class CommentsService {
   constructor(
     private readonly commentsRepository: MusicsCommentsRepository,
     private readonly musicsRepository: MusicsRepository,
     private readonly notificationRepository: NotificationsRepository,
-  ) { }
+  ) {}
 
   public async createComment(
     data: TMusicsComments,
     user: TUser,
-  ): Promise<{ comment: MusicsComments }>
-  {
-    try
-    {
+  ): Promise<{ comment: MusicsComments }> {
+    try {
       data.userId = user.id;
       const comment = await this.commentsRepository.create(data);
-      if (data.parentCommentId)
-      {
+      if (data.parentCommentId) {
         const parentComment = await this.commentsRepository.findOneById(
           data.parentCommentId,
         );
@@ -41,8 +36,7 @@ export class CommentsService
           message: NotificationMessages.COMMENTED_TO_COMMENT(user.name),
           link: `/track/${data.musicId}`,
         });
-      } else
-      {
+      } else {
         const music = await this.musicsRepository.findOneById(data.musicId);
         await this.notificationRepository.create({
           userId: music.artistId,
@@ -56,8 +50,7 @@ export class CommentsService
       }
 
       return { comment };
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -66,54 +59,42 @@ export class CommentsService
     id: number,
     data: TMusicsComments,
     user: TUser,
-  ): Promise<{ comment: MusicsComments }>
-  {
-    try
-    {
+  ): Promise<{ comment: MusicsComments }> {
+    try {
       data.userId = user.id;
       const comment = await this.commentsRepository.update(id, data);
       return { comment };
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async getComment(id: number): Promise<{ comment: MusicsComments }>
-  {
-    try
-    {
+  public async getComment(id: number): Promise<{ comment: MusicsComments }> {
+    try {
       const comment = await this.commentsRepository.findOneById(id);
       return { comment };
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
   public async getCommentsByTrack(
     id: number,
-  ): Promise<{ comments: MusicsComments[] }>
-  {
-    try
-    {
+  ): Promise<{ comments: MusicsComments[] }> {
+    try {
       const comments = await this.commentsRepository.findAllByMusic(id);
       return { comments };
-    } catch (error)
-    {
+    } catch (error) {
       console.error('error :>> ', error);
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async deleteComment(id: number, userId: number): Promise<void>
-  {
-    try
-    {
+  public async deleteComment(id: number, userId: number): Promise<void> {
+    try {
       await this.commentsRepository.delete(id, userId);
       return;
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -121,17 +102,14 @@ export class CommentsService
   public checkCanComment(
     userId: string,
     userCommentMap: Map<string, Date>,
-  ):
-      {
-        canComment: boolean;
-        nextCommentTime?: Date;
-      }
-  {
+  ): {
+    canComment: boolean;
+    nextCommentTime?: Date;
+  } {
     const now = new Date();
     const nextCommentTime = userCommentMap.get(userId);
 
-    if (nextCommentTime && now.getTime() < nextCommentTime.getTime())
-    {
+    if (nextCommentTime && now.getTime() < nextCommentTime.getTime()) {
       return { canComment: false, nextCommentTime };
     }
 

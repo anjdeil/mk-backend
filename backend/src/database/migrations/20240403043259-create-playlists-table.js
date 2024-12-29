@@ -5,45 +5,47 @@ module.exports = {
     await queryInterface.createTable(
       'playlists',
       {
-      id: {
+        id: {
           allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
-      title: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      description: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      coverImage: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      public: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
-      },
-      ownerId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id',
+          autoIncrement: true,
+          primaryKey: true,
+          type: Sequelize.INTEGER,
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
+        title: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        description: {
+          type: Sequelize.TEXT,
+          allowNull: true,
+        },
+        coverImage: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
+        public: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: true,
+        },
+        ownerId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'users',
+            key: 'id',
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+        },
       },
-    }, {
-      timestamps: true,
-      paranoid: true,
-      freezeTableName: true,
-      sequelize: queryInterface.sequelize
-    });
+      {
+        timestamps: true,
+        paranoid: true,
+        freezeTableName: true,
+        sequelize: queryInterface.sequelize,
+      },
+    );
 
     await queryInterface.createTable('playlist-musics', {
       playlistId: {

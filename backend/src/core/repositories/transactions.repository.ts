@@ -1,5 +1,4 @@
-import
-{
+import {
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -12,78 +11,60 @@ import Transactions from '../models/transactions.entity';
 import { TTransactions } from '../types/transaction';
 
 @Injectable()
-export class TransactionsRepository
-{
+export class TransactionsRepository {
   constructor(
     @Inject(TRANSACTION_REPOSITORY)
     private readonly transactionRepository: typeof Transactions,
-  ) { }
+  ) {}
 
-  public async create(transaction: TTransactions): Promise<Transactions>
-  {
-    try
-    {
+  public async create(transaction: TTransactions): Promise<Transactions> {
+    try {
       return await this.transactionRepository.create<Transactions>(transaction);
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async findOneById(id: string): Promise<Transactions>
-  {
-    try
-    {
+  public async findOneById(id: string): Promise<Transactions> {
+    try {
       return await this.transactionRepository.findOne<Transactions>({
         where: { id },
       });
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async bulkCreate(data: TTransactions[]): Promise<Transactions[]>
-  {
-    try
-    {
+  public async bulkCreate(data: TTransactions[]): Promise<Transactions[]> {
+    try {
       return await this.transactionRepository.bulkCreate<Transactions>(data);
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async findAll(filters: FindOptions): Promise<Transactions[]>
-  {
-    try
-    {
+  public async findAll(filters: FindOptions): Promise<Transactions[]> {
+    try {
       return await this.transactionRepository.findAll<Transactions>(filters);
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async findAllByUserId(userId: number): Promise<Transactions[]>
-  {
-    try
-    {
+  public async findAllByUserId(userId: number): Promise<Transactions[]> {
+    try {
       return await this.transactionRepository.findAll<Transactions>({
         where: {
           [Op.or]: [{ recipientId: userId }],
         },
       });
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async countBalance(userId: number): Promise<number>
-  {
-    try
-    {
+  public async countBalance(userId: number): Promise<number> {
+    try {
       const transactions =
         await this.transactionRepository.findAll<Transactions>({
           where: {
@@ -91,25 +72,20 @@ export class TransactionsRepository
             [Op.not]: [{ status: TransactionStatus.REJECTED }],
           },
         });
-      const balance = transactions.reduce((acc, transaction) =>
-      {
-        if (transaction.type === TransactionType.SALE)
-        {
+      const balance = transactions.reduce((acc, transaction) => {
+        if (transaction.type === TransactionType.SALE) {
           return acc + transaction.amount;
         }
         return acc - transaction.amount;
       }, 0);
       return balance ?? 0;
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  public async updateStatus(id: string, status: TransactionStatus)
-  {
-    try
-    {
+  public async updateStatus(id: string, status: TransactionStatus) {
+    try {
       const [, [updatedTransaction]] =
         await this.transactionRepository.update<Transactions>(
           { status },
@@ -119,8 +95,7 @@ export class TransactionsRepository
           },
         );
       return updatedTransaction;
-    } catch (error)
-    {
+    } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
   }

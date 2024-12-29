@@ -4,6 +4,8 @@ import { AuthModule } from './auth/auth.module';
 import { CartModule } from './cart/cart.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ContentModule } from './content/content.module';
+import { FollowsModule } from './follows/follows.module';
+import { HelpModule } from './help/help.module';
 import { InstrumentsModule } from './instruments/instruments.module';
 import { KeysModule } from './keys/keys.module';
 import { MoodsModule } from './moods/moods.module';
@@ -21,8 +23,6 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { TypesModule } from './types/types.module';
 import { UsersModule } from './users/users.module';
 import { WithdrawalModule } from './withdrawal/withdrawal.module';
-import { HelpModule } from './help/help.module';
-import { FollowsModule } from './follows/follows.module';
 
 @Module({
   imports: [

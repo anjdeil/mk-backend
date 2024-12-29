@@ -1,5 +1,4 @@
-import
-{
+import {
   BelongsTo,
   Column,
   DataType,
@@ -13,8 +12,7 @@ import { NotificationType } from '../enums/notifications';
 import { TNotification } from '../types/notification';
 
 @Table({ tableName: 'notifications', freezeTableName: true, timestamps: true })
-export default class Notifications extends Model<TNotification>
-{
+export default class Notifications extends Model<TNotification> {
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,

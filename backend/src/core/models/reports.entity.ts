@@ -1,12 +1,11 @@
-import
-  {
-    Table,
-    Model,
-    Column,
-    ForeignKey,
-    DataType,
-    BelongsTo,
-  } from 'sequelize-typescript';
+import {
+  Table,
+  Model,
+  Column,
+  ForeignKey,
+  DataType,
+  BelongsTo,
+} from 'sequelize-typescript';
 
 import Music from './music.entity';
 import User from './user.entity';
@@ -14,8 +13,7 @@ import { ReportStatus } from '../enums/reports';
 import { TReport } from '../types/reports';
 
 @Table({ tableName: 'reports', freezeTableName: true, timestamps: false })
-export default class Reports extends Model<TReport>
-{
+export default class Reports extends Model<TReport> {
   @Column({
     allowNull: false,
     type: DataType.STRING,

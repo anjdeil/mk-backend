@@ -23,11 +23,11 @@ import MusicIntruments from './musicInstruments.entity';
 import MusicKeys from './musicKeys.entity';
 import MusicMoods from './musicMoods.entity';
 import MusicTypes from './musicTypes.entity';
+import PlaylistFollow from './playlistFollow.entity';
 import TrackType from './trackType.entity';
 import User from './user.entity';
 import { MusicStatus } from '../enums/musics';
 import { TFullMusic, TMusicCreate } from '../types/music';
-import PlaylistFollow from "./playlistFollow.entity";
 
 @Table({ tableName: 'musics', freezeTableName: true })
 export default class Music extends Model<TFullMusic, TMusicCreate> {
@@ -142,7 +142,12 @@ export default class Music extends Model<TFullMusic, TMusicCreate> {
   @BelongsToMany(() => Playlist, () => PlaylistMusic, 'musicId', 'playlistId')
   playlists: Array<Playlist & { PlaylistMusic: PlaylistMusic }>;
 
-  @BelongsToMany(() => PlaylistFollow, () => PlaylistMusic, 'musicId', 'playlistId')
+  @BelongsToMany(
+    () => PlaylistFollow,
+    () => PlaylistMusic,
+    'musicId',
+    'playlistId',
+  )
   playlistFollows: Array<PlaylistFollow & { PlaylistMusic: PlaylistMusic }>;
 
   @HasMany(() => MusicsFavorites)

@@ -1,5 +1,4 @@
-import
-{
+import {
   Body,
   Controller,
   Get,
@@ -11,8 +10,7 @@ import
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import
-{
+import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
@@ -29,9 +27,8 @@ import { AuthRequest } from '../../core/types/common';
 
 @ApiTags('reports')
 @Controller('reports')
-export class ReportsController
-{
-  constructor(private readonly reportsService: ReportsService) { }
+export class ReportsController {
+  constructor(private readonly reportsService: ReportsService) {}
 
   @ApiBearerAuth()
   @ApiResponse({
@@ -42,8 +39,7 @@ export class ReportsController
   @AllowedRoles(Roles.ADMIN, Roles.MODERATOR)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get()
-  async findAll(@Query() query: any)
-  {
+  async findAll(@Query() query: any) {
     return await this.reportsService.findAll(query);
   }
 
@@ -56,8 +52,7 @@ export class ReportsController
   @AllowedRoles(Roles.ADMIN, Roles.MODERATOR)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number)
-  {
+  async findOne(@Param('id') id: number) {
     return await this.reportsService.findOne(id);
   }
 
@@ -70,13 +65,12 @@ export class ReportsController
   @ApiBody({ type: CreateReportsDto })
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  async create(@Body() data: CreateReportsDto, @Req() req: AuthRequest)
-  {
+  async create(@Body() data: CreateReportsDto, @Req() req: AuthRequest) {
     const report = await this.reportsService.createReport(data, req.user.id);
     return {
       message: 'Report successfully created',
       report: report,
-    }
+    };
   }
 
   @ApiBearerAuth()
@@ -89,8 +83,7 @@ export class ReportsController
   @AllowedRoles(Roles.ADMIN, Roles.MODERATOR)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Put(':id')
-  async update(@Param('id') id: number, @Body() data: UpdateReportsDto)
-  {
+  async update(@Param('id') id: number, @Body() data: UpdateReportsDto) {
     return await this.reportsService.update(id, data);
   }
 }

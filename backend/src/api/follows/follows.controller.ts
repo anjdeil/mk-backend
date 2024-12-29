@@ -3,15 +3,16 @@ import {
   Post,
   Delete,
   Param,
-  BadRequestException, UseGuards,
+  BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
-import {ApiResponse, ApiTags, ApiParam, ApiBearerAuth} from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiResponse, ApiTags, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 
 import { FollowService } from './follows.service';
-import {AllowedRoles} from "../../core/decorators";
-import {Roles} from "../../core/enums";
-import {AuthGuard} from "@nestjs/passport";
-import {RolesGuard} from "../../core/guards";
+import { AllowedRoles } from '../../core/decorators';
+import { Roles } from '../../core/enums';
+import { RolesGuard } from '../../core/guards';
 
 @ApiTags('follows')
 @Controller('follows')

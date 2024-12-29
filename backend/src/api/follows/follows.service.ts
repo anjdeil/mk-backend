@@ -1,26 +1,23 @@
 import { Injectable } from '@nestjs/common';
 
-import
-  {
-    NotificationsRepository,
-    UsersRepository,
-  } from '../../core/repositories';
+import { NotificationMessages } from '../../core/constants/notifications';
+import { NotificationType } from '../../core/enums';
+import {
+  NotificationsRepository,
+  UsersRepository,
+} from '../../core/repositories';
 import { FollowRepository } from '../../core/repositories/follow.repository';
 import { TFollow } from '../../core/types/follow';
-import { NotificationType } from "../../core/enums";
-import { NotificationMessages } from "../../core/constants/notifications";
 
 @Injectable()
-export class FollowService
-{
+export class FollowService {
   constructor(
     private readonly followRepository: FollowRepository,
     private readonly notificationsRepository: NotificationsRepository,
     private readonly usersRepository: UsersRepository,
-  ) { }
+  ) {}
 
-  async followUser(data: TFollow): Promise<void>
-  {
+  async followUser(data: TFollow): Promise<void> {
     await this.followRepository.follow(data);
     const followerUser = await this.usersRepository.findOneById(
       data.followerId,
@@ -37,8 +34,7 @@ export class FollowService
     });
   }
 
-  async unfollowUser(data: TFollow): Promise<void>
-  {
+  async unfollowUser(data: TFollow): Promise<void> {
     await this.followRepository.unfollow(data);
   }
 }

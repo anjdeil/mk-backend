@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PlaylistFollowService } from './playlist-follow.service';
-import { PlaylistsRepository } from '../../core/repositories';
+import { PlaylistsRepository } from '../../../core/repositories';
 
 describe('PlaylistService', () => {
   let service: PlaylistFollowService;

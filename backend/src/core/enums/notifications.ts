@@ -1,5 +1,4 @@
-export enum NotificationType
-{
+export enum NotificationType {
   MUSIC_APPROVED = 'MUSIC_APPROVED',
   MUSIC_PUBLISHED = 'MUSIC_PUBLISHED',
   MUSIC_DECLINED = 'MUSIC_DECLINED',

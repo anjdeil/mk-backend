@@ -5,7 +5,7 @@ import * as winston from 'winston';
 const { combine, timestamp, label, align, ms, printf, colorize, errors } =
   winston.format;
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const NewrelicWinston = require('newrelic-winston');
 
 export const logger = winston.createLogger({

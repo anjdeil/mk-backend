@@ -1,5 +1,5 @@
 export const getUserHelpRequestTemplate = (data) => {
-    return `Dear ${data.email},
+  return `Dear ${data.email},
 
 Thank you for reaching out to us for assistance. We have received your help request and our team is working on it. You can expect to hear back from us shortly.
 

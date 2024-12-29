@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Inject, Injectable, Logger, LoggerService } from '@nestjs/common';
 import { Op, Sequelize } from 'sequelize';
 
 import { MUSICS_REPOSITORY, USER_REPOSITORY } from '../../core/constants';
+import { musicForPlaylistsInclude } from '../../core/constants/includes';
 import { MusicStatus } from '../../core/enums';
 import { Category, Music, MusicFiles, Sales, User } from '../../core/models';
-import {musicForPlaylistsInclude} from "../../core/constants/includes";
 
 @Injectable()
 export class QueriesService {
@@ -160,7 +159,7 @@ export class QueriesService {
         {
           model: MusicFiles,
           as: 'files',
-          attributes: ['id', 'type', 'cost']
+          attributes: ['id', 'type', 'cost'],
         },
       ],
       // order: [['listenCount', 'desc']],

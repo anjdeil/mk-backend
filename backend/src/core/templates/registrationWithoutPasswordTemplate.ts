@@ -305,5 +305,5 @@ export const getRegistrationWithoutPasswordTemplate = (data) => {
 </body>
 </html>
 
-  `
+  `;
 };

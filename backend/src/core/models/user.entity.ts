@@ -10,18 +10,18 @@ import {
 import BillingAddress from './billingAddress.entity';
 import MusicsComments from './comments.entity';
 import MusicsFavorites from './favorites.entity';
+import Follow from './follow.entity';
 import MusicsHistory from './history.entity';
+import { Playlist } from './index';
 import Music from './music.entity';
 import MusicFiles from './musicFiles.entity';
 import Payout from './payout.entity';
+import PlaylistFollow from './playlistFollow.entity';
 import ResetPassword from './resetPassword.entity';
 import Sales from './sales.entity';
 import Transactions from './transactions.entity';
 import { Roles } from '../enums/roles';
 import { TUser } from '../types/user';
-import {Playlist} from "./index";
-import Follow from './follow.entity';
-import PlaylistFollow from './playlistFollow.entity';
 
 @Table({ tableName: 'users', freezeTableName: true, paranoid: true })
 export default class User extends Model<TUser> {

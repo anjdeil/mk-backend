@@ -47,7 +47,6 @@ export class AuthService {
         return null;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user['dataValues'];
 
       return result;
@@ -66,13 +65,12 @@ export class AuthService {
         throw new UnauthorizedException(
           'Unable to sign in with provided credentials. Please check your details and try again.',
         );
-      }
-      else if (!user.confirmed) {
+      } else if (!user.confirmed) {
         throw new ForbiddenException(
           'You have not confirmed your email address',
         );
       }
-      
+
       const token = await this.generateToken(user);
       const refreshToken = await this.generateRefresToken({ id: user.id });
 
@@ -165,7 +163,7 @@ export class AuthService {
   ): Promise<{ user: User; token: string; refreshToken: string }> {
     try {
       const user = await this.userRepository.findOneById(data.id);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const { password, ...result } = user['dataValues'];
       if (!user) {
         throw new BadRequestException('No such user');

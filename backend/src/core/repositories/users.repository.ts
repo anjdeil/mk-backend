@@ -1,12 +1,17 @@
-import {Inject, Injectable, InternalServerErrorException,} from '@nestjs/common';
-import {FindOptions, Op} from 'sequelize';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { FindOptions, Op } from 'sequelize';
 
-import {USER_REPOSITORY} from '../constants';
-import {musicOrderFields, userOrderFields} from '../constants/search';
-import {MusicStatus} from '../enums/musics';
-import {Roles} from '../enums/roles';
-import {getRelevanceTimeRange} from '../helpers/relevance.helper';
-import {User} from '../models';
+import { USER_REPOSITORY } from '../constants';
+import { FollowRepository } from './follow.repository';
+import { musicOrderFields, userOrderFields } from '../constants/search';
+import { MusicStatus } from '../enums/musics';
+import { Roles } from '../enums/roles';
+import { getRelevanceTimeRange } from '../helpers/relevance.helper';
+import { User } from '../models';
 import Category from '../models/category.entity';
 import MusicsHistory from '../models/history.entity';
 import Instrument from '../models/instrument.entity';
@@ -15,15 +20,13 @@ import Mood from '../models/mood.entity';
 import Music from '../models/music.entity';
 import MusicFiles from '../models/musicFiles.entity';
 import TrackType from '../models/trackType.entity';
-import {TUser} from '../types/user';
-import {FollowRepository} from "./follow.repository";
+import { TUser } from '../types/user';
 
 @Injectable()
 export class UsersRepository {
   constructor(
     @Inject(USER_REPOSITORY) private readonly userRepository: typeof User,
     private readonly followRepository: FollowRepository,
-
   ) {}
 
   async connection(): Promise<any> {
@@ -232,7 +235,7 @@ export class UsersRepository {
         },
       ];
 
-      const { count, rows: users} = await this.userRepository.findAndCountAll({
+      const { count, rows: users } = await this.userRepository.findAndCountAll({
         attributes: {
           exclude: [
             'password',

@@ -22,4 +22,4 @@ dotenv.config();
   controllers: [AppController],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

@@ -3,8 +3,7 @@ import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 
 import { ReportStatus } from '../enums/reports';
 
-export class CreateReportsDto
-{
+export class CreateReportsDto {
   @ApiProperty()
   @IsString()
   report: string;
@@ -20,8 +19,7 @@ export class CreateReportsDto
   subjectid: number;
 }
 
-export class UpdateReportsDto
-{
+export class UpdateReportsDto {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
