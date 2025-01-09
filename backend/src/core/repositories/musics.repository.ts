@@ -873,7 +873,7 @@ export class MusicsRepository {
 
         for (const filter of filterMapping) {
           if (filter.values) {
-            whereFilters[filter.field] = { [Op.contains]: filter.values };
+            whereFilters[filter.field] = { [Op.overlap]: filter.values };
           }
         }
         if (whereFilters) {
