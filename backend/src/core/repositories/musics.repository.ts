@@ -451,12 +451,19 @@ export class MusicsRepository {
   ): Promise<boolean> {
     try {
       const { categories, moods, keys, instruments, types } = data;
+      const updatedFields: Partial<
+        Pick<
+          TMusic,
+          'categoryIds' | 'moodIds' | 'keyIds' | 'instrumentIds' | 'typeIds'
+        >
+      > = {};
 
       if (categories && categories.length > 0) {
         await this.musicCategories.destroy({ where: { musicId } });
         await this.musicCategories.bulkCreate(
           categories.map((categoryId) => ({ categoryId, musicId })),
         );
+        updatedFields.categoryIds = categories;
       }
 
       if (moods && moods.length > 0) {
@@ -464,6 +471,7 @@ export class MusicsRepository {
         await this.musicMoods.bulkCreate(
           moods.map((moodId) => ({ moodId, musicId })),
         );
+        updatedFields.moodIds = moods;
       }
 
       if (keys && keys.length > 0) {
@@ -471,6 +479,7 @@ export class MusicsRepository {
         await this.musicKeys.bulkCreate(
           keys.map((keyId) => ({ keyId, musicId })),
         );
+        updatedFields.keyIds = keys;
       }
 
       if (instruments && instruments.length > 0) {
@@ -478,6 +487,7 @@ export class MusicsRepository {
         await this.musicInstruments.bulkCreate(
           instruments.map((instrumentId) => ({ instrumentId, musicId })),
         );
+        updatedFields.instrumentIds = instruments;
       }
 
       if (types && types.length > 0) {
@@ -485,7 +495,12 @@ export class MusicsRepository {
         await this.musicTypes.bulkCreate(
           types.map((typeId) => ({ typeId, musicId })),
         );
+        updatedFields.typeIds = types;
       }
+
+      await this.musicsRepository.update(updatedFields, {
+        where: { id: musicId },
+      });
 
       return true;
     } catch (error) {
